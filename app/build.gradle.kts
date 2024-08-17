@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.aquariumwidget.android.application.jacoco)
     alias(libs.plugins.aquariumwidget.hilt)
     id("com.google.android.gms.oss-licenses-plugin")
-    alias(libs.plugins.baselineprofile)
     alias(libs.plugins.roborazzi)
 }
 
