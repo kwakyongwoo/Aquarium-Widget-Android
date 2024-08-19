@@ -1,0 +1,733 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "31c7ff7fdf5562b5867179e703183fa2",
+    "entities": [
+      {
+        "tableName": "AQUARIUM",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`aquarium_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT, PRIMARY KEY(`aquarium_id`))",
+        "fields": [
+          {
+            "fieldPath": "aquariumId",
+            "columnName": "aquarium_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "aquarium_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "CATCH",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`catch_id` INTEGER NOT NULL, `user_id` INTEGER NOT NULL, `rod_id` INTEGER NOT NULL, `fish_id` INTEGER NOT NULL, PRIMARY KEY(`catch_id`), FOREIGN KEY(`user_id`) REFERENCES `USER`(`user_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`rod_id`) REFERENCES `ROD`(`rod_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`fish_id`) REFERENCES `FISH`(`fish_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "catchId",
+            "columnName": "catch_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rodId",
+            "columnName": "rod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fishId",
+            "columnName": "fish_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "catch_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "USER",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "ROD",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rod_id"
+            ],
+            "referencedColumns": [
+              "rod_id"
+            ]
+          },
+          {
+            "table": "FISH",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fish_id"
+            ],
+            "referencedColumns": [
+              "fish_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "CLEAR",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `quest_id` INTEGER NOT NULL, `habitat_id` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `quest_id`, `habitat_id`), FOREIGN KEY(`user_id`) REFERENCES `USER`(`user_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`quest_id`) REFERENCES `QUEST`(`quest_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`habitat_id`) REFERENCES `HABITAT`(`habitat_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "questId",
+            "columnName": "quest_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "habitatId",
+            "columnName": "habitat_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id",
+            "quest_id",
+            "habitat_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "USER",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "QUEST",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "quest_id"
+            ],
+            "referencedColumns": [
+              "quest_id"
+            ]
+          },
+          {
+            "table": "HABITAT",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "habitat_id"
+            ],
+            "referencedColumns": [
+              "habitat_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "COLLECT_PARTS",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `parts_id` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `parts_id`), FOREIGN KEY(`user_id`) REFERENCES `USER`(`user_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`parts_id`) REFERENCES `PARTS`(`parts_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "partsId",
+            "columnName": "parts_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id",
+            "parts_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "USER",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "PARTS",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parts_id"
+            ],
+            "referencedColumns": [
+              "parts_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "COLLECT_ROD",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `rod_id` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `rod_id`), FOREIGN KEY(`user_id`) REFERENCES `USER`(`user_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`rod_id`) REFERENCES `ROD`(`rod_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rodId",
+            "columnName": "rod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id",
+            "rod_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "USER",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "ROD",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rod_id"
+            ],
+            "referencedColumns": [
+              "rod_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "CONTAIN",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `aquarium_id` INTEGER NOT NULL, `fish_id` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `aquarium_id`, `fish_id`), FOREIGN KEY(`user_id`) REFERENCES `USER`(`user_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`aquarium_id`) REFERENCES `AQUARIUM`(`aquarium_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`fish_id`) REFERENCES `FISH`(`fish_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "aquariumId",
+            "columnName": "aquarium_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fishId",
+            "columnName": "fish_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id",
+            "aquarium_id",
+            "fish_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "USER",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "user_id"
+            ]
+          },
+          {
+            "table": "AQUARIUM",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "aquarium_id"
+            ],
+            "referencedColumns": [
+              "aquarium_id"
+            ]
+          },
+          {
+            "table": "FISH",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fish_id"
+            ],
+            "referencedColumns": [
+              "fish_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "FISH",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fish_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `rarity` TEXT NOT NULL, `imageUrl` TEXT, `habitat_id` INTEGER NOT NULL, PRIMARY KEY(`fish_id`), FOREIGN KEY(`habitat_id`) REFERENCES `HABITAT`(`habitat_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "fishId",
+            "columnName": "fish_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rarity",
+            "columnName": "rarity",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "habitatId",
+            "columnName": "habitat_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fish_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "HABITAT",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "habitat_id"
+            ],
+            "referencedColumns": [
+              "habitat_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "HABITAT",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`habitat_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT, PRIMARY KEY(`habitat_id`))",
+        "fields": [
+          {
+            "fieldPath": "habitatId",
+            "columnName": "habitat_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "habitat_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "MATCH",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`aquarium_id` INTEGER NOT NULL, `rod_id` INTEGER NOT NULL, `habitat_id` INTEGER NOT NULL, PRIMARY KEY(`aquarium_id`, `rod_id`, `habitat_id`), FOREIGN KEY(`aquarium_id`) REFERENCES `AQUARIUM`(`aquarium_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`rod_id`) REFERENCES `ROD`(`rod_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`habitat_id`) REFERENCES `HABITAT`(`habitat_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "aquariumId",
+            "columnName": "aquarium_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rodId",
+            "columnName": "rod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "habitatId",
+            "columnName": "habitat_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "aquarium_id",
+            "rod_id",
+            "habitat_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "AQUARIUM",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "aquarium_id"
+            ],
+            "referencedColumns": [
+              "aquarium_id"
+            ]
+          },
+          {
+            "table": "ROD",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rod_id"
+            ],
+            "referencedColumns": [
+              "rod_id"
+            ]
+          },
+          {
+            "table": "HABITAT",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "habitat_id"
+            ],
+            "referencedColumns": [
+              "habitat_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "PARTS",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`parts_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT, `rod_id` INTEGER NOT NULL, PRIMARY KEY(`parts_id`), FOREIGN KEY(`rod_id`) REFERENCES `ROD`(`rod_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "partsId",
+            "columnName": "parts_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rodId",
+            "columnName": "rod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "parts_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "ROD",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "rod_id"
+            ],
+            "referencedColumns": [
+              "rod_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "QUEST",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`quest_id` INTEGER NOT NULL, `habitat_id` INTEGER NOT NULL, `parts_id` INTEGER NOT NULL, PRIMARY KEY(`quest_id`), FOREIGN KEY(`habitat_id`) REFERENCES `HABITAT`(`habitat_id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`parts_id`) REFERENCES `PARTS`(`parts_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "questId",
+            "columnName": "quest_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "habitatId",
+            "columnName": "habitat_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "partsId",
+            "columnName": "parts_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "quest_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "HABITAT",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "habitat_id"
+            ],
+            "referencedColumns": [
+              "habitat_id"
+            ]
+          },
+          {
+            "table": "PARTS",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "parts_id"
+            ],
+            "referencedColumns": [
+              "parts_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ROD",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rod_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT, PRIMARY KEY(`rod_id`))",
+        "fields": [
+          {
+            "fieldPath": "rodId",
+            "columnName": "rod_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "rod_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "USER",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER NOT NULL, `chance` INTEGER NOT NULL, `cur_habitat` INTEGER NOT NULL, `selected_aquarium_theme_id` INTEGER, `last_played_date` INTEGER, PRIMARY KEY(`user_id`), FOREIGN KEY(`selected_aquarium_theme_id`) REFERENCES `AQUARIUM`(`aquarium_id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chance",
+            "columnName": "chance",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "curHabitat",
+            "columnName": "cur_habitat",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "selectedAquariumThemeId",
+            "columnName": "selected_aquarium_theme_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastPlayedDate",
+            "columnName": "last_played_date",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "AQUARIUM",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "selected_aquarium_theme_id"
+            ],
+            "referencedColumns": [
+              "aquarium_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '31c7ff7fdf5562b5867179e703183fa2')"
+    ]
+  }
+}
