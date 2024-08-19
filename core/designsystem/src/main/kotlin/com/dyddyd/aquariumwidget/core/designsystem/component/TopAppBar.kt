@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.dyddyd.aquariumwidget.core.designsystem.R
 
+private val APP_BAR_HEIGHT = 56.dp
+
 @Composable
 fun AquariumTopAppBar(
     modifier: Modifier = Modifier,
@@ -84,7 +86,7 @@ fun AquariumTopAppBar(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(APP_BAR_HEIGHT)
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
