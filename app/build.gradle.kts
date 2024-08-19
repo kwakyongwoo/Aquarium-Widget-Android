@@ -1,15 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.aquariumwidget.android.application)
+    alias(libs.plugins.aquariumwidget.android.application.compose)
+    alias(libs.plugins.aquariumwidget.android.application.jacoco)
+    alias(libs.plugins.aquariumwidget.hilt)
+    id("com.google.android.gms.oss-licenses-plugin")
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     namespace = "com.dyddyd.aquariumwidget"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.dyddyd.aquariumwidget"
-        minSdk = 24
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -28,27 +30,59 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
         }
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.androidx.compose.material3.adaptive.layout)
+    implementation(libs.androidx.compose.material3.adaptive.navigation)
+    implementation(libs.androidx.compose.material3.windowSizeClass)
+    implementation(libs.androidx.compose.runtime.tracing)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.profileinstaller)
+    implementation(libs.androidx.tracing.ktx)
+    implementation(libs.androidx.window.core)
+    implementation(libs.kotlinx.coroutines.guava)
+    implementation(libs.coil.kt)
+
+    ksp(libs.hilt.compiler)
+
+    debugImplementation(libs.androidx.compose.ui.testManifest)
+//    debugImplementation(projects.uiTestHiltManifest)
+
+//    kspTest(libs.hilt.compiler)
+
+//    testImplementation(projects.core.dataTest)
+    testImplementation(libs.hilt.android.testing)
+//    testImplementation(projects.sync.syncTest)
+
+//    testDemoImplementation(libs.robolectric)
+//    testDemoImplementation(libs.roborazzi)
+//    testDemoImplementation(projects.core.screenshotTesting)
+
+    androidTestImplementation(kotlin("test"))
+//    androidTestImplementation(projects.core.testing)
+//    androidTestImplementation(projects.core.dataTest)
+//    androidTestImplementation(projects.core.datastoreTest)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(libs.hilt.android.testing)
 }

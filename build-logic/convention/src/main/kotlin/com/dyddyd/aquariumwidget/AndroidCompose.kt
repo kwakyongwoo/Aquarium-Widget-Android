@@ -38,15 +38,13 @@ internal fun Project.configureAndroidCompose(
             rootProject.layout.buildDirectory.dir(projectDir.toRelativeString(rootDir))
         }.map { it.dir(dir) }
 
-        project.providers.gradleProperty("enableComposeCompilerMetrics").onlyIfTrue()
-            .relativeToRootProject("compose-metrics")
-            .let(metricsDestination::set)
-
-        project.providers.gradleProperty("enableComposeCompilerReports").onlyIfTrue()
-            .relativeToRootProject("compose-reports")
-            .let(reportsDestination::set)
-
-        stabilityConfigurationFile = rootProject.layout.projectDirectory.file("compose_compiler_config.conf")
+//        project.providers.gradleProperty("enableComposeCompilerMetrics").onlyIfTrue()
+//            .relativeToRootProject("compose-metrics")
+//            .let(metricsDestination::set)
+//
+//        project.providers.gradleProperty("enableComposeCompilerReports").onlyIfTrue()
+//            .relativeToRootProject("compose-reports")
+//            .let(reportsDestination::set)
 
         enableStrongSkippingMode = true
     }
