@@ -67,10 +67,10 @@ fun AquariumApp(
 
                     AquariumTopAppBar(
                         modifier = Modifier,
-                        onHomeClick = {  },
-                        onCollectionClick = {  },
-                        onItemClick = {  },
-                        onHelpClick = {  },
+                        onHomeClick = { appState.navigateToHome() },
+                        onCollectionClick = { appState.navigateToCollections() },
+                        onItemClick = { appState.navigateToItems() },
+                        onHelpClick = { appState.navigateToHelp() },
                     )
                 }
             }

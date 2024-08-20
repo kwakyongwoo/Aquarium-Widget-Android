@@ -45,6 +45,11 @@ android {
 
 dependencies {
     implementation(projects.feature.splash)
+    implementation(projects.feature.home)
+    implementation(projects.feature.fishing)
+    implementation(projects.feature.collections)
+    implementation(projects.feature.items)
+    implementation(projects.feature.help)
 
     implementation(projects.core.common)
     implementation(projects.core.ui)

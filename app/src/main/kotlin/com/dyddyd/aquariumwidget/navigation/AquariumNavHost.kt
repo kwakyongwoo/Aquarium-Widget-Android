@@ -5,6 +5,13 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.dyddyd.aquariumwidget.feature.collections.navigation.collectionsScreen
+import com.dyddyd.aquariumwidget.feature.fishging.navigation.fishingScreen
+import com.dyddyd.aquariumwidget.feature.fishging.navigation.navigateToFishing
+import com.dyddyd.aquariumwidget.feature.help.navigation.helpScreen
+import com.dyddyd.aquariumwidget.feature.home.navigation.homeScreen
+import com.dyddyd.aquariumwidget.feature.home.navigation.navigateToHome
+import com.dyddyd.aquariumwidget.feature.items.navigation.itemsScreen
 import com.dyddyd.aquariumwidget.feature.splash.navigation.SPLASH_ROUTE
 import com.dyddyd.aquariumwidget.feature.splash.navigation.splashScreen
 import com.dyddyd.aquariumwidget.ui.AquariumAppState
@@ -26,6 +33,11 @@ fun AquariumNavHost(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
-        splashScreen(navigateToHome = { })
+        splashScreen(navigateToHome = navController::navigateToHome)
+        homeScreen(onGoFishingClick = navController::navigateToFishing)
+        fishingScreen(onHomeClick = navController::navigateToHome)
+        collectionsScreen(onCancelClick = navController::navigateToHome)
+        itemsScreen(onCancelClick = navController::navigateToHome)
+        helpScreen(onCancelClick = navController::navigateToHome)
     }
 }
