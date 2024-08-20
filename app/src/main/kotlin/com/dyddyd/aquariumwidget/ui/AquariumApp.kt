@@ -28,7 +28,7 @@ fun AquariumApp(
 ) {
     var showFishDialog by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier) {
+    Box(modifier = Modifier.fillMaxSize()) {
 
         AquariumApp(
             appState = appState,
@@ -49,11 +49,11 @@ fun AquariumApp(
     }
 
     Scaffold { padding ->
+        padding
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .consumeWindowInsets(padding)
         ) {
             val destination = appState.currentTopLevelDestination
 
@@ -75,10 +75,10 @@ fun AquariumApp(
                 }
             }
 
-//            AquariumNavHost(
-//                appState = appState,
-//                modifier = Modifier.fillMaxSize(),
-//            )
+            AquariumNavHost(
+                appState = appState,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     }
 }

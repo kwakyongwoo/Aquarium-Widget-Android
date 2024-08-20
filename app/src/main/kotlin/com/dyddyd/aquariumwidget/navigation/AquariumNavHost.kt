@@ -5,13 +5,15 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.dyddyd.aquariumwidget.feature.splash.navigation.SPLASH_ROUTE
+import com.dyddyd.aquariumwidget.feature.splash.navigation.splashScreen
 import com.dyddyd.aquariumwidget.ui.AquariumAppState
 
 @Composable
 fun AquariumNavHost(
     appState: AquariumAppState,
     modifier: Modifier = Modifier,
-    startDestination: String = "SPLASH_ROUTE",
+    startDestination: String = SPLASH_ROUTE,
 ) {
     val navController = appState.navController
 
@@ -24,6 +26,6 @@ fun AquariumNavHost(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
-
+        splashScreen(navigateToHome = { })
     }
 }

@@ -8,14 +8,16 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.dyddyd.aquariumwidget.feature.splash.navigation.SPLASH_ROUTE
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination
 import kotlinx.coroutines.CoroutineScope
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.SPLASH
 
 @Composable
 fun rememberAquariumAppState(
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-) : AquariumAppState {
+): AquariumAppState {
     return remember(
         navController,
         coroutineScope,
@@ -38,7 +40,7 @@ class AquariumAppState(
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when (currentDestination?.route) {
-
+            SPLASH_ROUTE -> SPLASH
             else -> null
         }
 

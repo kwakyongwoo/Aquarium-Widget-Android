@@ -1,6 +1,7 @@
 package com.dyddyd.aquariumwidget
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -66,12 +67,12 @@ class MainActivity : ComponentActivity() {
             DisposableEffect(Unit) {
                 enableEdgeToEdge(
                     statusBarStyle = SystemBarStyle.light(
-                        android.graphics.Color.TRANSPARENT,
-                        android.graphics.Color.TRANSPARENT,
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT,
                     ),
                     navigationBarStyle = SystemBarStyle.light(
-                        android.graphics.Color.TRANSPARENT,
-                        android.graphics.Color.TRANSPARENT,
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT,
                     ),
                 )
 
