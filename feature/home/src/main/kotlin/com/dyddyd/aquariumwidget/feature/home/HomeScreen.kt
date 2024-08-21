@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,6 +23,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxWidth
 import com.dyddyd.aquariumwidget.core.designsystem.theme.HomeBackgroundColor
+import com.dyddyd.aquariumwidget.core.model.data.Fish
+import com.dyddyd.aquariumwidget.core.ui.FishItem
 import com.dyddyd.aquariumwidget.core.ui.getPainterByName
 
 @Composable
@@ -80,7 +84,7 @@ private fun HomeBottom(
     modifier: Modifier = Modifier,
     homeUiState: HomeUiState,
 ) {
-    Box {
+    Box(modifier = modifier) {
         ImageMaxWidth(
             painter = painterResource(id = R.drawable.feature_home_bottom_background),
             contentDescription = "Home Bottom Background",
@@ -111,6 +115,23 @@ private fun HomeBottom(
                     painter = painterResource(id = R.drawable.feature_home_bottom_bar),
                     contentDescription = "Home Bottom Bar"
                 )
+
+                if (homeUiState is HomeUiState.Success) {
+                    LazyRow(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                            .padding(24.dp)
+                            .padding(top = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        homeUiState.fishList.forEach { fish ->
+                            item {
+                                FishItem(fishId = fish.fishId)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -119,5 +140,51 @@ private fun HomeBottom(
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(onGoFishingClick = {}, homeUiState = HomeUiState.Loading)
+    HomeScreen(
+        onGoFishingClick = {}, homeUiState = HomeUiState.Success(
+            aquariumThemeId = 1,
+            fishList = listOf(
+                Fish(
+                    fishId = 1,
+                    name = "Fish",
+                    habitatId = 1,
+                    description = "Fish",
+                    rarity = "",
+                    imageUrl = "1"
+                ),
+                Fish(
+                    fishId = 2,
+                    name = "Fish",
+                    habitatId = 1,
+                    description = "Fish",
+                    rarity = "",
+                    imageUrl = "2"
+                ),
+                Fish(
+                    fishId = 3,
+                    name = "Fish",
+                    habitatId = 1,
+                    description = "Fish",
+                    rarity = "",
+                    imageUrl = "3"
+                ),
+                Fish(
+                    fishId = 4,
+                    name = "Fish",
+                    habitatId = 1,
+                    description = "Fish",
+                    rarity = "",
+                    imageUrl = "4"
+                ),
+                Fish(
+                    fishId = 5,
+                    name = "Fish",
+                    habitatId = 1,
+                    description = "Fish",
+                    rarity = "",
+                    imageUrl = "5"
+                )
+            )
+        )
+    )
 }

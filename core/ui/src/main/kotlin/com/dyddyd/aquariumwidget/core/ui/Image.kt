@@ -16,13 +16,3 @@ fun getPainterByName(name: String): Painter {
 
     return painterResource(id = resourceId)
 }
-
-@Composable
-fun TestImage() {
-
-}
-
-@Composable
-internal fun TestImage2() {
-
-}
