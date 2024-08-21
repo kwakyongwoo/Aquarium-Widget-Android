@@ -9,4 +9,6 @@ android {
 
 dependencies {
     implementation(projects.feature.splash)
+
+    implementation(projects.core.data)
 }

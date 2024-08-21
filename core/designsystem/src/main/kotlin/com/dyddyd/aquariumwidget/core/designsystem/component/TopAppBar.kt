@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,7 +42,8 @@ fun AquariumTopAppBar(
     onHomeClick: () -> Unit,
     onCollectionClick: () -> Unit,
     onItemClick: () -> Unit,
-    onHelpClick: () -> Unit
+    onHelpClick: () -> Unit,
+    isHomeSelected: Boolean,
 ) {
     var isSideBarOpen by remember { mutableStateOf(false) }
 
@@ -74,7 +76,7 @@ fun AquariumTopAppBar(
                         .fillMaxHeight()
                         .weight(0.8f)
                         .fillMaxWidth(0.8f),
-                    onHomeClick = onHomeClick,
+                    onHomeClick = if (isHomeSelected) { { isSideBarOpen = false } } else onHomeClick,
                     onCollectionClick = onCollectionClick,
                     onItemClick = onItemClick,
                     onHelpClick = onHelpClick,
@@ -83,37 +85,42 @@ fun AquariumTopAppBar(
             }
         }
 
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(APP_BAR_HEIGHT)
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            ImageMaxHeight(
-                painter = painterResource(id = R.drawable.core_designsystem_topappbar_icon),
-                contentDescription = "Top App Bar Icon",
-            )
+        Column {
+            // Home Top Background aspect ratio
+            Box(modifier = Modifier.aspectRatio(90 / 12f))
 
             Row(
-                modifier = Modifier.padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(APP_BAR_HEIGHT)
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ImageMaxHeight(
-                    painter = painterResource(id = R.drawable.core_designsystem_topappbar_quest),
-                    contentDescription = "Top App Bar Menu",
+                    painter = painterResource(id = R.drawable.core_designsystem_topappbar_icon),
+                    contentDescription = "Top App Bar Icon",
                 )
 
-                ImageMaxHeight(
-                    painter = painterResource(id = R.drawable.core_designsystem_topappbar_menu),
-                    contentDescription = "Top App Bar Menu",
-                    modifier = Modifier
-                        .clickable {
-                            isSideBarOpen = !isSideBarOpen
-                        },
-                )
+                Row(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ImageMaxHeight(
+                        painter = painterResource(id = R.drawable.core_designsystem_topappbar_quest),
+                        contentDescription = "Top App Bar Menu",
+                    )
+
+                    ImageMaxHeight(
+                        painter = painterResource(id = R.drawable.core_designsystem_topappbar_menu),
+                        contentDescription = "Top App Bar Menu",
+                        modifier = Modifier
+                            .clickable {
+                                isSideBarOpen = !isSideBarOpen
+                            },
+                    )
+                }
             }
         }
     }
@@ -231,7 +238,8 @@ fun AquariumTopAppBarPreview() {
             onHomeClick = {},
             onCollectionClick = {},
             onItemClick = {},
-            onHelpClick = {}
+            onHelpClick = {},
+            isHomeSelected = true
         )
     }
 }
