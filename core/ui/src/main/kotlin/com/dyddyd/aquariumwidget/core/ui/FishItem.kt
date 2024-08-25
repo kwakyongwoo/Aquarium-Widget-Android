@@ -1,5 +1,6 @@
 package com.dyddyd.aquariumwidget.core.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,7 +38,7 @@ fun FishItem(
             ImageMaxWidth(
                 painter = fishPainter,
                 contentDescription = "Fish Image",
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = if (fishPainter.intrinsicSize.width <= 200) 16.dp else 12.dp)
             )
         } else {
             ImageMaxHeight(

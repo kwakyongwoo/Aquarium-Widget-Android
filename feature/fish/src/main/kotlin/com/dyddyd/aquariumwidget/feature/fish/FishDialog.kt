@@ -142,7 +142,7 @@ private fun FishDialogMiddle(
                 ImageMaxWidth(
                     painter = fishPainter,
                     contentDescription = "Fish Image",
-                    modifier = Modifier.padding(horizontal = 80.dp)
+                    modifier = Modifier.padding(horizontal = if (fishPainter.intrinsicSize.width <= 200) 120.dp else 90.dp)
                 )
             } else {
                 ImageMaxHeight(
