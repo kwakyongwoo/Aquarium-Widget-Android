@@ -1,5 +1,6 @@
 package com.dyddyd.aquariumwidget.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxWidth
+import com.dyddyd.aquariumwidget.core.designsystem.component.noRippleClickable
 import com.dyddyd.aquariumwidget.core.designsystem.theme.HomeBackgroundColor
 import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.core.ui.FishItem
@@ -30,6 +32,7 @@ import com.dyddyd.aquariumwidget.core.ui.getPainterByName
 @Composable
 internal fun HomeRoute(
     onGoFishingClick: () -> Unit,
+    onFishItemClick: (Fish) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -38,7 +41,9 @@ internal fun HomeRoute(
     HomeScreen(
         modifier = modifier,
         onGoFishingClick = onGoFishingClick,
-        homeUiState = homeUiState
+        onFishItemClick = onFishItemClick,
+        homeUiState = homeUiState,
+        onClickFishItem = viewModel::setFishId
     )
 }
 
@@ -46,7 +51,9 @@ internal fun HomeRoute(
 internal fun HomeScreen(
     modifier: Modifier = Modifier,
     onGoFishingClick: () -> Unit,
+    onFishItemClick: (Fish) -> Unit,
     homeUiState: HomeUiState,
+    onClickFishItem: (Int) -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -72,7 +79,9 @@ internal fun HomeScreen(
                 Spacer(modifier = Modifier.fillMaxHeight(0.1f))
 
                 HomeBottom(
+                    onFishItemClick = onFishItemClick,
                     homeUiState = homeUiState,
+                    onClickFishItem = onClickFishItem
                 )
             }
         }
@@ -81,8 +90,10 @@ internal fun HomeScreen(
 
 @Composable
 private fun HomeBottom(
+    onFishItemClick: (Fish) -> Unit,
     modifier: Modifier = Modifier,
     homeUiState: HomeUiState,
+    onClickFishItem: (Int) -> Unit
 ) {
     Box(modifier = modifier) {
         ImageMaxWidth(
@@ -127,7 +138,13 @@ private fun HomeBottom(
                     ) {
                         homeUiState.fishList.forEach { fish ->
                             item {
-                                FishItem(fishId = fish.fishId)
+                                FishItem(
+                                    fishId = fish.fishId,
+                                    modifier = Modifier.noRippleClickable {
+                                        onClickFishItem(fish.fishId)
+                                        onFishItemClick(fish)
+                                    }
+                                )
                             }
                         }
                     }
@@ -137,54 +154,56 @@ private fun HomeBottom(
     }
 }
 
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(
-        onGoFishingClick = {}, homeUiState = HomeUiState.Success(
-            aquariumThemeId = 1,
-            fishList = listOf(
-                Fish(
-                    fishId = 1,
-                    name = "Fish",
-                    habitatId = 1,
-                    description = "Fish",
-                    rarity = "",
-                    imageUrl = "1"
-                ),
-                Fish(
-                    fishId = 2,
-                    name = "Fish",
-                    habitatId = 1,
-                    description = "Fish",
-                    rarity = "",
-                    imageUrl = "2"
-                ),
-                Fish(
-                    fishId = 3,
-                    name = "Fish",
-                    habitatId = 1,
-                    description = "Fish",
-                    rarity = "",
-                    imageUrl = "3"
-                ),
-                Fish(
-                    fishId = 4,
-                    name = "Fish",
-                    habitatId = 1,
-                    description = "Fish",
-                    rarity = "",
-                    imageUrl = "4"
-                ),
-                Fish(
-                    fishId = 5,
-                    name = "Fish",
-                    habitatId = 1,
-                    description = "Fish",
-                    rarity = "",
-                    imageUrl = "5"
-                )
-            )
-        )
-    )
-}
+//@Preview
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen(
+//        onGoFishingClick = {},
+//        onFishItemClick = {},
+//        homeUiState = HomeUiState.Success(
+//            aquariumThemeId = 1,
+//            fishList = listOf(
+//                Fish(
+//                    fishId = 1,
+//                    name = "Fish",
+//                    habitatId = 1,
+//                    description = "Fish",
+//                    rarity = "",
+//                    imageUrl = "1"
+//                ),
+//                Fish(
+//                    fishId = 2,
+//                    name = "Fish",
+//                    habitatId = 1,
+//                    description = "Fish",
+//                    rarity = "",
+//                    imageUrl = "2"
+//                ),
+//                Fish(
+//                    fishId = 3,
+//                    name = "Fish",
+//                    habitatId = 1,
+//                    description = "Fish",
+//                    rarity = "",
+//                    imageUrl = "3"
+//                ),
+//                Fish(
+//                    fishId = 4,
+//                    name = "Fish",
+//                    habitatId = 1,
+//                    description = "Fish",
+//                    rarity = "",
+//                    imageUrl = "4"
+//                ),
+//                Fish(
+//                    fishId = 5,
+//                    name = "Fish",
+//                    habitatId = 1,
+//                    description = "Fish",
+//                    rarity = "",
+//                    imageUrl = "5"
+//                )
+//            )
+//        )
+//    )
+//}

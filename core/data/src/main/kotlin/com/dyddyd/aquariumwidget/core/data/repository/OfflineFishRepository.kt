@@ -39,6 +39,10 @@ internal class OfflineFishRepository @Inject constructor(
         fishDao.getCollectedFish(fishId = fishId)
             .map { it.map(FishEntity::asExternalModel) }
 
+    override fun getFishById(fishId: Int): Flow<Fish> =
+        fishDao.getFishById(fishId)
+            .map { it.asExternalModel() }
+
     override fun getAllCollectedFishByRarity(rarity: String): Flow<List<Fish>> =
         fishDao.getAllCollectedFishByRarity(rarity = rarity)
             .map { it.map(FishEntity::asExternalModel) }

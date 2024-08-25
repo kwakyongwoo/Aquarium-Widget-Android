@@ -19,7 +19,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dyddyd.aquariumwidget.core.designsystem.component.AquariumTopAppBar
+import com.dyddyd.aquariumwidget.core.model.data.Fish
+import com.dyddyd.aquariumwidget.feature.fish.FishDialog
+import com.dyddyd.aquariumwidget.feature.fish.FishDialogUiState
+import com.dyddyd.aquariumwidget.feature.fish.FishDialogViewModel
 import com.dyddyd.aquariumwidget.navigation.AquariumNavHost
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination
 
@@ -27,14 +33,22 @@ import com.dyddyd.aquariumwidget.navigation.TopLevelDestination
 fun AquariumApp(
     appState: AquariumAppState,
     modifier: Modifier = Modifier,
+    dialogViewModel: FishDialogViewModel = hiltViewModel()
 ) {
     var showFishDialog by remember { mutableStateOf(false) }
+    val fishDialogUiState by dialogViewModel.fishDialogUiState.collectAsStateWithLifecycle()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
+    Box(modifier = modifier.fillMaxSize()) {
         AquariumApp(
             appState = appState,
             showFishDialog = showFishDialog,
+            onFishDialogDismiss = { showFishDialog = false },
+            onShowFishDetailDialog = { fish ->
+                dialogViewModel.setFishId(fish.fishId)
+                showFishDialog = true
+            },
+            fishDialogUiState = fishDialogUiState,
+            addRemoveFish = dialogViewModel::addRemoveFishInAquarium
         )
     }
 }
@@ -42,12 +56,20 @@ fun AquariumApp(
 @Composable
 fun AquariumApp(
     appState: AquariumAppState,
-    showFishDialog: Boolean,
     modifier: Modifier = Modifier,
+    showFishDialog: Boolean,
+    onFishDialogDismiss: () -> Unit,
+    onShowFishDetailDialog: (Fish) -> Unit,
+    fishDialogUiState: FishDialogUiState,
+    addRemoveFish: (Boolean) -> Unit
 ) {
 
     if (showFishDialog) {
-        // TODO: Implement FishDialog
+        FishDialog(
+            uiState = fishDialogUiState,
+            onDismiss = { onFishDialogDismiss() },
+            addRemoveFish = addRemoveFish
+        )
     }
 
     Scaffold { padding ->
@@ -77,6 +99,7 @@ fun AquariumApp(
             AquariumNavHost(
                 appState = appState,
                 modifier = Modifier.fillMaxSize(),
+                onShowFishDetailDialog = onShowFishDetailDialog
             )
         }
     }

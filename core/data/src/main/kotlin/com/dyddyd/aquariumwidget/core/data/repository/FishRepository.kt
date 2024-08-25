@@ -19,6 +19,8 @@ interface FishRepository {
 
     fun getCollectedFish(fishId: Int): Flow<List<Fish>>
 
+    fun getFishById(fishId: Int): Flow<Fish>
+
     fun getAllCollectedFishByRarity(rarity: String): Flow<List<Fish>>
 
     fun getAllCollectedFishWithoutDuplication(): Flow<List<Fish>>

@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.feature.collections.navigation.collectionsScreen
 import com.dyddyd.aquariumwidget.feature.fishging.navigation.fishingScreen
 import com.dyddyd.aquariumwidget.feature.fishging.navigation.navigateToFishing
@@ -21,6 +22,7 @@ fun AquariumNavHost(
     appState: AquariumAppState,
     modifier: Modifier = Modifier,
     startDestination: String = SPLASH_ROUTE,
+    onShowFishDetailDialog: (Fish) -> Unit,
 ) {
     val navController = appState.navController
 
@@ -34,7 +36,10 @@ fun AquariumNavHost(
         popExitTransition = { ExitTransition.None },
     ) {
         splashScreen(navigateToHome = navController::navigateToHome)
-        homeScreen(onGoFishingClick = navController::navigateToFishing)
+        homeScreen(
+            onGoFishingClick = navController::navigateToFishing,
+            onFishItemClick = onShowFishDetailDialog
+        )
         fishingScreen(onHomeClick = navController::navigateToHome)
         collectionsScreen(onCancelClick = navController::navigateToHome)
         itemsScreen(onCancelClick = navController::navigateToHome)
