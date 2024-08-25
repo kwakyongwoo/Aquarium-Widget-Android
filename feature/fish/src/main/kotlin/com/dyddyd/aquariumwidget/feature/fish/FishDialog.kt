@@ -1,12 +1,14 @@
 package com.dyddyd.aquariumwidget.feature.fish
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,6 +65,15 @@ fun FishDialog(
 
     Dialog(onDismissRequest = { onDismiss() }) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (uiState is FishDialogUiState.Success) {
+                Image(
+                    painter = getPainterByName(name = "fish_detail_title_$rarity"),
+                    contentDescription = "Fish Detail Title",
+                    modifier = Modifier.height(24.dp).padding(horizontal = 16.dp),
+                    contentScale = ContentScale.FillHeight
+                )
+            }
+
             Box(contentAlignment = Alignment.Center) {
                 ImageMaxWidth(painter = getPainterByName(name = "fish_detail_background_$rarity"))
 
@@ -202,7 +213,9 @@ private fun addRemoveButton(
         ImageMaxWidth(
             painter = painterResource(id = if (isInAquarium) R.drawable.feature_fish_detail_del_text else R.drawable.feature_fish_detail_add_text),
             contentDescription = "Fish Add/Remove Text",
-            modifier = if (isInAquarium) Modifier.padding(horizontal = 32.dp) else Modifier.padding(horizontal = 64.dp)
+            modifier = if (isInAquarium) Modifier.padding(horizontal = 32.dp) else Modifier.padding(
+                horizontal = 64.dp
+            )
         )
     }
 }
