@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.feature.home.HomeRoute
 import com.dyddyd.aquariumwidget.feature.splash.navigation.SPLASH_ROUTE
 
@@ -17,11 +18,15 @@ fun NavController.navigateToHome() = navigate(HOME_ROUTE, navOptions {
 })
 
 fun NavGraphBuilder.homeScreen(
-    onGoFishingClick: () -> Unit
+    onGoFishingClick: () -> Unit,
+    onFishItemClick: (Fish) -> Unit
 ) {
     composable(
         route = HOME_ROUTE,
     ) {
-        HomeRoute(onGoFishingClick = onGoFishingClick)
+        HomeRoute(
+            onGoFishingClick = onGoFishingClick,
+            onFishItemClick = onFishItemClick
+        )
     }
 }

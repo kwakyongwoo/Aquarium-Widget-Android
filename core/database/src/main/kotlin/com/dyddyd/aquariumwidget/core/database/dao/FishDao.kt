@@ -29,6 +29,9 @@ interface FishDao {
     @Query("SELECT * FROM FISH INNER JOIN CATCH ON FISH.fish_id = CATCH.fish_id WHERE CATCH.user_id = :userId AND CATCH.fish_id = :fishId;")
     fun getCollectedFish(userId: Int = 1, fishId: Int): Flow<List<FishEntity>>
 
+    @Query("SELECT * FROM FISH WHERE fish_id = :fishId;")
+    fun getFishById(fishId: Int): Flow<FishEntity>
+
     @Query(
         value = """
             SELECT * FROM FISH
