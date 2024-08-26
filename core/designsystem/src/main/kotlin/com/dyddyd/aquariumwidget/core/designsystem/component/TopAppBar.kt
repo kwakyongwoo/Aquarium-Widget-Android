@@ -1,5 +1,6 @@
 package com.dyddyd.aquariumwidget.core.designsystem.component
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.dyddyd.aquariumwidget.core.designsystem.R
 
-private val APP_BAR_HEIGHT = 56.dp
+val APP_BAR_HEIGHT = 56.dp
 
 @Composable
 fun AquariumTopAppBar(
@@ -46,6 +48,10 @@ fun AquariumTopAppBar(
     isHomeSelected: Boolean,
 ) {
     var isSideBarOpen by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = isSideBarOpen) {
+        isSideBarOpen = false
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         AnimatedVisibility(
@@ -76,7 +82,9 @@ fun AquariumTopAppBar(
                         .fillMaxHeight()
                         .weight(0.8f)
                         .fillMaxWidth(0.8f),
-                    onHomeClick = if (isHomeSelected) { { isSideBarOpen = false } } else onHomeClick,
+                    onHomeClick = if (isHomeSelected) {
+                        { isSideBarOpen = false }
+                    } else onHomeClick,
                     onCollectionClick = onCollectionClick,
                     onItemClick = onItemClick,
                     onHelpClick = onHelpClick,
@@ -228,6 +236,19 @@ fun SideBarOption(
     }
 }
 
+@Composable
+fun TopAppBarVerticalDivider(
+    modifier: Modifier = Modifier
+) {
+    Column {
+        Box(modifier = Modifier.height(24.dp))
+
+        Box(modifier = Modifier.aspectRatio(90 / 12f))
+
+        Box(modifier = modifier.height(APP_BAR_HEIGHT))
+    }
+}
+
 @Preview
 @Composable
 fun AquariumTopAppBarPreview() {
@@ -241,5 +262,11 @@ fun AquariumTopAppBarPreview() {
             onHelpClick = {},
             isHomeSelected = true
         )
+
+        Column {
+            TopAppBarVerticalDivider()
+
+            Text(text = "Content")
+        }
     }
 }

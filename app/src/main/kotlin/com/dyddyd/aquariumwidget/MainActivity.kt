@@ -55,6 +55,8 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
+            viewModel.updateLastPlayedDate()
+
             val activity = (LocalContext.current as Activity)
             val windowInsetsController = remember {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
