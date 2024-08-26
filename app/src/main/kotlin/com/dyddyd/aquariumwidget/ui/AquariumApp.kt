@@ -1,5 +1,9 @@
 package com.dyddyd.aquariumwidget.ui
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,11 +16,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +34,12 @@ import com.dyddyd.aquariumwidget.feature.fish.FishDialogUiState
 import com.dyddyd.aquariumwidget.feature.fish.FishDialogViewModel
 import com.dyddyd.aquariumwidget.navigation.AquariumNavHost
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.COLLECTIONS
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.HELP
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.HOME
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.ITEMS
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.SPLASH
+import kotlinx.coroutines.delay
 
 @Composable
 fun AquariumApp(
@@ -63,6 +75,10 @@ fun AquariumApp(
     fishDialogUiState: FishDialogUiState,
     addRemoveFish: (Boolean) -> Unit
 ) {
+    val destination = appState.currentTopLevelDestination
+
+    val context = LocalContext.current
+    var backPressedTime = 0L
 
     if (showFishDialog) {
         FishDialog(
@@ -72,6 +88,20 @@ fun AquariumApp(
         )
     }
 
+    BackHandler {
+        if (destination != HOME && destination != SPLASH) {
+            appState.navigateToTopLevelDestination(HOME)
+        }
+        else if (destination == HOME) {
+            if (System.currentTimeMillis() - backPressedTime <= 1000L) {
+                (context as ComponentActivity).finish()
+            } else {
+                Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            }
+            backPressedTime = System.currentTimeMillis()
+        }
+    }
+
     Scaffold { padding ->
         padding
 
@@ -79,19 +109,17 @@ fun AquariumApp(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            val destination = appState.currentTopLevelDestination
-
             if (destination != TopLevelDestination.SPLASH) {
                 Column(modifier = Modifier.zIndex(1f)) {
                     Spacer(modifier = Modifier.height(24.dp))
 
                     AquariumTopAppBar(
                         modifier = Modifier,
-                        onHomeClick = { appState.navigateToHome() },
-                        onCollectionClick = { appState.navigateToCollections() },
-                        onItemClick = { appState.navigateToItems() },
-                        onHelpClick = { appState.navigateToHelp() },
-                        isHomeSelected = destination == TopLevelDestination.HOME,
+                        onHomeClick = { appState.navigateToTopLevelDestination(HOME) },
+                        onCollectionClick = { appState.navigateToTopLevelDestination(COLLECTIONS) },
+                        onItemClick = { appState.navigateToTopLevelDestination(ITEMS) },
+                        onHelpClick = { appState.navigateToTopLevelDestination(HELP) },
+                        isHomeSelected = destination == HOME,
                     )
                 }
             }

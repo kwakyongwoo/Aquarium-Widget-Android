@@ -16,6 +16,7 @@ import com.dyddyd.aquariumwidget.feature.items.navigation.itemsScreen
 import com.dyddyd.aquariumwidget.feature.splash.navigation.SPLASH_ROUTE
 import com.dyddyd.aquariumwidget.feature.splash.navigation.splashScreen
 import com.dyddyd.aquariumwidget.ui.AquariumAppState
+import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.HOME
 
 @Composable
 fun AquariumNavHost(
@@ -35,17 +36,17 @@ fun AquariumNavHost(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
-        splashScreen(navigateToHome = navController::navigateToHome)
+        splashScreen(navigateToHome = { appState.navigateToTopLevelDestination(HOME) })
         homeScreen(
             onGoFishingClick = navController::navigateToFishing,
             onFishItemClick = onShowFishDetailDialog
         )
-        fishingScreen(onHomeClick = navController::navigateToHome)
+        fishingScreen(onHomeClick = { appState.navigateToTopLevelDestination(HOME) })
         collectionsScreen(
-            onCancelClick = navController::navigateToHome,
+            onCancelClick = { appState.navigateToTopLevelDestination(HOME) },
             onFishItemClick = onShowFishDetailDialog
         )
-        itemsScreen(onCancelClick = navController::navigateToHome)
-        helpScreen(onCancelClick = navController::navigateToHome)
+        itemsScreen(onCancelClick = { appState.navigateToTopLevelDestination(HOME) })
+        helpScreen(onCancelClick = { appState.navigateToTopLevelDestination(HOME) })
     }
 }

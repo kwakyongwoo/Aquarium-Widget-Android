@@ -5,12 +5,15 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.dyddyd.aquariumwidget.feature.collections.navigation.COLLECTIONS_ROUTE
 import com.dyddyd.aquariumwidget.feature.collections.navigation.navigateToCollections
 import com.dyddyd.aquariumwidget.feature.fishging.navigation.FISHING_ROUTE
+import com.dyddyd.aquariumwidget.feature.fishging.navigation.navigateToFishing
 import com.dyddyd.aquariumwidget.feature.help.navigation.HELP_ROUTE
 import com.dyddyd.aquariumwidget.feature.help.navigation.navigateToHelp
 import com.dyddyd.aquariumwidget.feature.home.navigation.HOME_ROUTE
@@ -62,6 +65,26 @@ class AquariumAppState(
             HELP_ROUTE -> HELP
             else -> null
         }
+
+    fun navigateToTopLevelDestination(destination: TopLevelDestination) {
+        val topLevelNavOptions = navOptions {
+            popUpTo(navController.graph.id) {
+                saveState = true
+            }
+
+            launchSingleTop = true
+            restoreState = true
+        }
+
+        when (destination) {
+            HOME -> navController.navigateToHome(topLevelNavOptions)
+            FISHING -> navController.navigateToFishing(topLevelNavOptions)
+            COLLECTIONS -> navController.navigateToCollections(topLevelNavOptions)
+            ITEMS -> navController.navigateToItems(topLevelNavOptions)
+            HELP -> navController.navigateToHelp(topLevelNavOptions)
+            else -> { }
+        }
+    }
 
     fun navigateToHome() = navController.navigateToHome()
     fun navigateToCollections() = navController.navigateToCollections()
