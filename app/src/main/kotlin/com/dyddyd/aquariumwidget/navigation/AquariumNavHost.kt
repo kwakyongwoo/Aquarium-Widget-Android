@@ -41,7 +41,10 @@ fun AquariumNavHost(
             onFishItemClick = onShowFishDetailDialog
         )
         fishingScreen(onHomeClick = navController::navigateToHome)
-        collectionsScreen(onCancelClick = navController::navigateToHome)
+        collectionsScreen(
+            onCancelClick = navController::navigateToHome,
+            onFishItemClick = onShowFishDetailDialog
+        )
         itemsScreen(onCancelClick = navController::navigateToHome)
         helpScreen(onCancelClick = navController::navigateToHome)
     }
