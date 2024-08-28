@@ -4,6 +4,7 @@ data class User(
     val userId: Int,
     val chance: Int,
     val curHabitat: Int,
+    val maxHabitat: Int,
     val selectedAquariumThemeId: Int?,
     val lastPlayedDate: Int?,
 )

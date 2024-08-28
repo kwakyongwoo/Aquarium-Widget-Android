@@ -50,4 +50,8 @@ internal class OfflineUserRepository @Inject constructor(
     override suspend fun updateLastPlayedDate(curDate: Int) {
         userDao.updateLastPlayedDate(curDate)
     }
+
+    override suspend fun setCurrentHabitat(habitatId: Int) {
+        userDao.setCurrentHabitat(habitatId = habitatId)
+    }
 }

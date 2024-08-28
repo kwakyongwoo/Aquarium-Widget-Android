@@ -25,6 +25,8 @@ data class UserEntity(
     val chance: Int,
     @ColumnInfo(name = "cur_habitat")
     val curHabitat: Int,
+    @ColumnInfo(name = "max_habitat")
+    val maxHabitat: Int,
     @ColumnInfo(name = "selected_aquarium_theme_id")
     val selectedAquariumThemeId: Int?,
     @ColumnInfo(name = "last_played_date")
@@ -35,6 +37,7 @@ fun UserEntity.asExternalModel() = User(
     userId = userId,
     chance = chance,
     curHabitat = curHabitat,
+    maxHabitat = maxHabitat,
     selectedAquariumThemeId = selectedAquariumThemeId,
     lastPlayedDate = lastPlayedDate,
 )
