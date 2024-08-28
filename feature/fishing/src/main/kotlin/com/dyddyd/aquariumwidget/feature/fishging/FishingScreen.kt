@@ -66,6 +66,7 @@ internal fun FishingRoute(
             viewModel.checkQuest()
             delay(2000)
             viewModel.clearedQuestList = null
+            viewModel.isClearStage = false
         }
     }
 
@@ -81,7 +82,8 @@ internal fun FishingRoute(
         fishingUiState = fishingUiState,
         fishingState = viewModel.fishingState,
         onFishingClick = viewModel::fishing,
-        clearedQuests = viewModel.clearedQuestList
+        clearedQuests = viewModel.clearedQuestList,
+        isClearStage = viewModel.isClearStage
     )
 }
 
@@ -92,7 +94,8 @@ internal fun FishingScreen(
     fishingUiState: FishingUiState,
     fishingState: FishingState,
     onFishingClick: () -> Unit,
-    clearedQuests: List<Quest>?
+    clearedQuests: List<Quest>?,
+    isClearStage: Boolean
 ) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
@@ -102,12 +105,6 @@ internal fun FishingScreen(
 
     if (fishingUiState is FishingUiState.Error) {
         onHomeClick()
-    }
-
-    val habitatName = if (fishingUiState is FishingUiState.Success) {
-        fishingUiState.habitat.name.lowercase()
-    } else {
-        "pond"
     }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -155,7 +152,7 @@ internal fun FishingScreen(
             )
 
             AnimatedVisibility(
-                visible = clearedQuests != null && fishingState is FishingState.NotFishing,
+                visible = clearedQuests != null && fishingState is FishingState.NotFishing && !isClearStage,
                 enter = fadeIn(),
                 exit = fadeOut(),
                 modifier = Modifier.align(Alignment.Center)
@@ -182,6 +179,17 @@ internal fun FishingScreen(
                         }
                     }
                 }
+            }
+            
+            AnimatedVisibility(
+                visible = isClearStage,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth(0.5f)
+            ) {
+                ImageMaxWidth(painter = painterResource(id = R.drawable.feature_fishing_clear_stage))
             }
         }
     }

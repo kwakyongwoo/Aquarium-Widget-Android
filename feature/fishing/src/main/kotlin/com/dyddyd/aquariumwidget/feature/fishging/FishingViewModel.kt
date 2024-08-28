@@ -89,6 +89,7 @@ class FishingViewModel @Inject constructor(
     var fishingState: FishingState by mutableStateOf(FishingState.NotFishing)
 
     var clearedQuestList: List<Quest>? by mutableStateOf(null)
+    var isClearStage by mutableStateOf(false)
 
     fun checkAndResetHearts() {
         viewModelScope.launch {
@@ -124,10 +125,18 @@ class FishingViewModel @Inject constructor(
             if (user.chance > 0) {
                 fishingState = FishingState.Waiting(R.drawable.feature_fishing_state1)
 
-                val rarity = selectRarity()
-                val fish = allFishList.first()
+                var rarity = selectRarity()
+                var fish = allFishList.first()
                     .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
                     .random()
+
+                repeat(100) {
+                    rarity = selectRarity()
+                    fish = allFishList.first()
+                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
+                        .random()
+                    fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
+                }
 
 //                userRepository.decreaseGameChanceCount()
                 fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
@@ -198,6 +207,7 @@ class FishingViewModel @Inject constructor(
             if (questUncleared.isEmpty()) {
                 userRepository.setCurrentHabitat(user.maxHabitat + 1)
                 userRepository.clearCurrentHabitat(user.maxHabitat)
+                isClearStage = true
             }
         }
     }
