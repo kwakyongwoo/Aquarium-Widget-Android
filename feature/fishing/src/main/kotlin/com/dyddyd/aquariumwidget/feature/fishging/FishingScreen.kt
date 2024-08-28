@@ -111,14 +111,14 @@ internal fun FishingScreen(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        ImageMaxSize(painter = getPainterByName(name = "fishing_background_$habitatName"))
-
         if (fishingUiState is FishingUiState.Success) {
+            ImageMaxSize(painter = getPainterByName(name = "fishing_background_${fishingUiState.habitat.name.lowercase()}"))
+
             FishingTopBar(
                 onHomeClick = onHomeClick,
                 chance = fishingUiState.chance,
                 modifier = Modifier.align(Alignment.TopCenter),
-                habitatName = habitatName
+                habitatName = fishingUiState.habitat.name
             )
 
             FishingCat(

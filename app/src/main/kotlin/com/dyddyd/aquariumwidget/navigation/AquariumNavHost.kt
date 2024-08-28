@@ -43,7 +43,7 @@ fun AquariumNavHost(
             onFishItemClick = onShowFishDetailDialog
         )
         fishingScreen(
-            onHomeClick = { appState.navigateToTopLevelDestination(HOME) },
+            onHomeClick = { navController.popBackStack() },
             onShowFishDetailDialog = onShowFishDetailDialog,
             showFishDialog = showFishDialog
         )

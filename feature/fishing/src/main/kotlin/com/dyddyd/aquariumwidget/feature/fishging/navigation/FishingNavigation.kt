@@ -1,5 +1,10 @@
 package com.dyddyd.aquariumwidget.feature.fishging.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -19,6 +24,18 @@ fun NavGraphBuilder.fishingScreen(
 ) {
     composable(
         route = FISHING_ROUTE,
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(700)
+            )
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(700)
+            )
+        }
     ) {
         FishingRoute(
             onHomeClick = onHomeClick,
