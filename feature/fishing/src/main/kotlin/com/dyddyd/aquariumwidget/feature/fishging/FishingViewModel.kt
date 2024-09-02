@@ -2,20 +2,16 @@ package com.dyddyd.aquariumwidget.feature.fishging
 
 import android.util.Log
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dyddyd.aquariumwidget.core.data.repository.FishRepository
 import com.dyddyd.aquariumwidget.core.data.repository.HabitatRepository
 import com.dyddyd.aquariumwidget.core.data.repository.PartsRepository
 import com.dyddyd.aquariumwidget.core.data.repository.QuestRepository
 import com.dyddyd.aquariumwidget.core.data.repository.RodRepository
 import com.dyddyd.aquariumwidget.core.data.repository.UserRepository
-import com.dyddyd.aquariumwidget.core.database.model.Catch
 import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.core.model.data.Habitat
 import com.dyddyd.aquariumwidget.core.model.data.Quest
@@ -37,14 +33,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
-import com.dyddyd.aquariumwidget.core.data.repository.HabitatRepository
-import com.dyddyd.aquariumwidget.core.data.repository.RodRepository
-import com.dyddyd.aquariumwidget.core.data.repository.UserRepository
-import com.dyddyd.aquariumwidget.core.model.data.Fish
-import com.dyddyd.aquariumwidget.core.model.data.Habitat
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -126,6 +114,8 @@ class FishingViewModel @Inject constructor(
         return "Common"
     }
 
+    private val TIME_INTERVAL = 700L
+
     fun fishing() {
         viewModelScope.launch {
             val rod = rod.first()
@@ -134,31 +124,25 @@ class FishingViewModel @Inject constructor(
             if (user.chance > 0) {
                 fishingState = FishingState.Waiting(R.drawable.feature_fishing_state1)
 
-                var rarity = selectRarity()
-                var fish = allFishList.first()
+                val rarity = selectRarity()
+                val fish = allFishList.first()
                     .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
                     .random()
 
-                repeat(100) {
-                    rarity = selectRarity()
-                    fish = allFishList.first()
-                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
-                        .random()
-                    fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
-                }
+                fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
 
 //                userRepository.decreaseGameChanceCount()
                 fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
 
-                delay(1000L)
+                delay(TIME_INTERVAL)
 
                 fishingState = FishingState.Bite(image = R.drawable.feature_fishing_state2)
 
-                delay(1000L)
+                delay(TIME_INTERVAL)
 
                 fishingState = FishingState.Gotcha(image = R.drawable.feature_fishing_state3)
 
-                delay(1000L)
+                delay(TIME_INTERVAL)
 
                 fishingState = FishingState.Caught(
                     fish = fish
@@ -240,24 +224,9 @@ sealed interface FishingUiState {
 }
 
 sealed interface FishingState {
-
     data object NotFishing : FishingState
-
-    data class Waiting(
-        val image: Int
-    ) : FishingState
-
-    data class Bite(
-        val image: Int
-    ) : FishingState
-
-    data class Gotcha(
-        val image: Int
-    ) : FishingState
-
-    data class Caught(
-        val fish: Fish
-    ) : FishingState
-        val fishList: List<Fish>,
-    ) : FishingUiState
+    data class Waiting(val image: Int) : FishingState
+    data class Bite(val image: Int) : FishingState
+    data class Gotcha(val image: Int) : FishingState
+    data class Caught(val fish: Fish) : FishingState
 }
