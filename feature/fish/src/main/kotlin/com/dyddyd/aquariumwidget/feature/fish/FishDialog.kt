@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -173,19 +175,24 @@ private fun FishDialogMiddle(
         if (fishId != 0) {
             val fishPainter = getPainterByName("fish_$fishId")
 
-            if (fishPainter.intrinsicSize.width > fishPainter.intrinsicSize.height) {
-                ImageMaxWidth(
-                    painter = fishPainter,
-                    contentDescription = "Fish Image",
-                    modifier = Modifier.padding(horizontal = if (fishPainter.intrinsicSize.width <= 200) 120.dp else 90.dp)
-                )
-            } else {
-                ImageMaxHeight(
-                    painter = fishPainter,
-                    contentDescription = "Fish Image",
-                    modifier = Modifier.padding(vertical = 32.dp)
-                )
-            }
+            Image(
+                painter = fishPainter,
+                contentDescription = "Fish Image",
+                modifier = Modifier.scale(2f),
+            )
+//            if (fishPainter.intrinsicSize.width > fishPainter.intrinsicSize.height) {
+//                ImageMaxWidth(
+//                    painter = fishPainter,
+//                    contentDescription = "Fish Image",
+//                    fraction = 0.5f
+//                )
+//            } else {
+//                ImageMaxHeight(
+//                    painter = fishPainter,
+//                    contentDescription = "Fish Image",
+//                    modifier = Modifier.padding(vertical = 32.dp)
+//                )
+//            }
         }
     }
 }
