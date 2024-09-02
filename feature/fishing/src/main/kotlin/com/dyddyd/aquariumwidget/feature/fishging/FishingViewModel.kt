@@ -37,6 +37,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
+import com.dyddyd.aquariumwidget.core.data.repository.HabitatRepository
+import com.dyddyd.aquariumwidget.core.data.repository.RodRepository
+import com.dyddyd.aquariumwidget.core.data.repository.UserRepository
+import com.dyddyd.aquariumwidget.core.model.data.Fish
+import com.dyddyd.aquariumwidget.core.model.data.Habitat
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -250,4 +258,6 @@ sealed interface FishingState {
     data class Caught(
         val fish: Fish
     ) : FishingState
+        val fishList: List<Fish>,
+    ) : FishingUiState
 }
