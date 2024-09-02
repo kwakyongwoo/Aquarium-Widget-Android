@@ -2,17 +2,15 @@ package com.dyddyd.aquariumwidget.feature.fishging
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideOut
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,22 +20,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dyddyd.aquariumwidget.core.designsystem.component.APP_BAR_HEIGHT
-import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxHeight
 import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxSize
 import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxWidth
 import com.dyddyd.aquariumwidget.core.designsystem.component.TopAppBarVerticalDivider
@@ -83,7 +81,8 @@ internal fun FishingRoute(
         fishingState = viewModel.fishingState,
         onFishingClick = viewModel::fishing,
         clearedQuests = viewModel.clearedQuestList,
-        isClearStage = viewModel.isClearStage
+        isClearStage = viewModel.isClearStage,
+        onStageSelectClick = viewModel::changeStage
     )
 }
 
@@ -95,8 +94,11 @@ internal fun FishingScreen(
     fishingState: FishingState,
     onFishingClick: () -> Unit,
     clearedQuests: List<Quest>?,
-    isClearStage: Boolean
+    isClearStage: Boolean,
+    onStageSelectClick: (Int) -> Unit
 ) {
+    var isStageSelectOpen by remember { mutableStateOf(false) }
+
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
     val screenHeightDp = configuration.screenHeightDp.dp
@@ -115,7 +117,8 @@ internal fun FishingScreen(
                 onHomeClick = onHomeClick,
                 chance = fishingUiState.chance,
                 modifier = Modifier.align(Alignment.TopCenter),
-                habitatName = fishingUiState.habitat.name
+                habitatName = fishingUiState.habitat.name,
+                onStageSelectClick = { isStageSelectOpen = true }
             )
 
             FishingCat(
@@ -180,7 +183,7 @@ internal fun FishingScreen(
                     }
                 }
             }
-            
+
             AnimatedVisibility(
                 visible = isClearStage,
                 enter = fadeIn(),
@@ -191,6 +194,14 @@ internal fun FishingScreen(
             ) {
                 ImageMaxWidth(painter = painterResource(id = R.drawable.feature_fishing_clear_stage))
             }
+
+            if (isStageSelectOpen) {
+                StageSelectDialog(
+                    onDismiss = { isStageSelectOpen = false },
+                    onStageSelectClick = onStageSelectClick,
+                    maxStage = fishingUiState.maxHabitat
+                )
+            }
         }
     }
 }
@@ -200,7 +211,8 @@ private fun FishingTopBar(
     modifier: Modifier = Modifier,
     onHomeClick: () -> Unit,
     chance: Int,
-    habitatName: String
+    habitatName: String,
+    onStageSelectClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -275,7 +287,7 @@ private fun FishingTopBar(
                     contentDescription = "Change Stage",
                     modifier = Modifier
                         .size(40.dp)
-                        .noRippleClickable { Log.d("FishingScreen", "Change Stage") },
+                        .noRippleClickable { onStageSelectClick() },
                 )
             }
 
@@ -395,6 +407,82 @@ private fun FishingStateImage(
         }
     }
 }
+
+@Composable
+private fun StageSelectDialog(
+    onDismiss: () -> Unit,
+    onStageSelectClick: (Int) -> Unit,
+    maxStage: Int
+) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            ImageMaxWidth(
+                painter = painterResource(id = R.drawable.feature_fishing_stage_select_title),
+                contentDescription = "Stage Select Background",
+                modifier = Modifier.padding(16.dp),
+                fraction = 0.4f
+            )
+
+            Box {
+                ImageMaxWidth(
+                    painter = painterResource(id = R.drawable.feature_fishing_stage_select_background),
+                    contentDescription = "Stage Select Background",
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(72 / 111f)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    for (i in 1..maxStage) {
+                        ImageMaxWidth(
+                            painter = getPainterByName(name = "fishing_stage_$i"),
+                            contentDescription = "Stage $i",
+                            modifier = Modifier.noRippleClickable {
+                                onStageSelectClick(i)
+                                onDismiss()
+                            }
+                        )
+                    }
+                    ImageMaxWidth(
+                        painter = painterResource(id = R.drawable.feature_fishing_stage_unknown),
+                    )
+                }
+            }
+        }
+    }
+}
+
+//@DevicePreviews
+//@Composable
+//private fun FishingScreenPreview() {
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        FishingScreen(
+//            onHomeClick = {},
+//            fishingUiState = FishingUiState.Success(
+//                chance = 3,
+//                habitat = Habitat(
+//                    habitatId = 1,
+//                    name = "Pond",
+//                    description = "Pond Description",
+//                    imageUrl = ""
+//                ),
+//                rod = Rod(
+//                    rodId = 1,
+//                    name = "Basic",
+//                    description = "Basic Rod",
+//                    imageUrl = ""
+//                )
+//            ),
+//            fishingState = FishingState.NotFishing,
+//            onFishingClick = {},
+//            clearedQuests = null,
+//            isClearStage = false
+//        )
+//    }
+//}
 
 //@Preview
 //@Composable

@@ -13,12 +13,13 @@ import androidx.compose.ui.layout.ContentScale
 fun ImageMaxSize(
     painter: Painter,
     contentDescription: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fraction: Float = 1f
 ) {
     Image(
         painter = painter,
         contentDescription = contentDescription,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(fraction),
         contentScale = ContentScale.FillBounds
     )
 }
@@ -27,12 +28,13 @@ fun ImageMaxSize(
 fun ImageMaxHeight(
     painter: Painter,
     contentDescription: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fraction: Float = 1f
 ) {
     Image(
         painter = painter,
         contentDescription = contentDescription,
-        modifier = modifier.fillMaxHeight(),
+        modifier = modifier.fillMaxHeight(fraction),
         contentScale = ContentScale.FillHeight
     )
 }
@@ -41,12 +43,13 @@ fun ImageMaxHeight(
 fun ImageMaxWidth(
     painter: Painter,
     contentDescription: String? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fraction: Float = 1f
 ) {
     Image(
         painter = painter,
         contentDescription = contentDescription,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(fraction),
         contentScale = ContentScale.FillWidth
     )
 }

@@ -77,7 +77,8 @@ class FishingViewModel @Inject constructor(
             FishingUiState.Success(
                 habitat = habitat,
                 rod = rod,
-                chance = user.chance
+                chance = user.chance,
+                maxHabitat = user.maxHabitat
             )
         }
     }.stateIn(
@@ -211,6 +212,12 @@ class FishingViewModel @Inject constructor(
             }
         }
     }
+
+    fun changeStage(stageId: Int) {
+        viewModelScope.launch {
+            userRepository.setCurrentHabitat(stageId)
+        }
+    }
 }
 
 sealed interface FishingUiState {
@@ -219,7 +226,8 @@ sealed interface FishingUiState {
     data class Success(
         val habitat: Habitat,
         val rod: Rod,
-        val chance: Int
+        val chance: Int,
+        val maxHabitat: Int
     ) : FishingUiState
 }
 
