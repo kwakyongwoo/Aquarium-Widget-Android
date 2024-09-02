@@ -26,9 +26,12 @@ interface UserDao {
     @Query("SELECT MAX(habitat_id) FROM HABITAT")
     fun getMaxHabitat(): Flow<Int>
 
-    @Query("UPDATE USER SET cur_habitat = cur_habitat + 1 WHERE user_id = :userId AND cur_habitat = :habitatId")
+    @Query("UPDATE USER SET max_habitat = max_habitat + 1 WHERE user_id = :userId AND max_habitat = :habitatId")
     suspend fun clearCurrentHabitat(userId: Int = 1, habitatId: Int)
 
     @Query("UPDATE USER SET last_played_date = :curDate WHERE user_id = :userId")
     suspend fun updateLastPlayedDate(curDate: Int, userId: Int = 1)
+
+    @Query("UPDATE USER SET cur_habitat = :habitatId WHERE user_id = :userId")
+    suspend fun setCurrentHabitat(userId: Int = 1, habitatId: Int)
 }

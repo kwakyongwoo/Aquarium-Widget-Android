@@ -24,6 +24,7 @@ fun AquariumNavHost(
     modifier: Modifier = Modifier,
     startDestination: String = SPLASH_ROUTE,
     onShowFishDetailDialog: (Fish) -> Unit,
+    showFishDialog: Boolean,
 ) {
     val navController = appState.navController
 
@@ -41,7 +42,11 @@ fun AquariumNavHost(
             onGoFishingClick = navController::navigateToFishing,
             onFishItemClick = onShowFishDetailDialog
         )
-        fishingScreen(onHomeClick = { appState.navigateToTopLevelDestination(HOME) })
+        fishingScreen(
+            onHomeClick = { appState.navigateToTopLevelDestination(HOME) },
+            onShowFishDetailDialog = onShowFishDetailDialog,
+            showFishDialog = showFishDialog
+        )
         collectionsScreen(
             onCancelClick = { appState.navigateToTopLevelDestination(HOME) },
             onFishItemClick = onShowFishDetailDialog

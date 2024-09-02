@@ -23,4 +23,6 @@ interface UserRepository {
     suspend fun clearCurrentHabitat(habitatId: Int)
 
     suspend fun updateLastPlayedDate(curDate: Int)
+
+    suspend fun setCurrentHabitat(habitatId: Int)
 }

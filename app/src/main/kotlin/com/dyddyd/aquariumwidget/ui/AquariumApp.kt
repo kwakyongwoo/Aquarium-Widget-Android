@@ -79,7 +79,7 @@ fun AquariumApp(
 
     val context = LocalContext.current
     var backPressedTime = 0L
-
+    
     if (showFishDialog) {
         FishDialog(
             uiState = fishDialogUiState,
@@ -127,7 +127,8 @@ fun AquariumApp(
             AquariumNavHost(
                 appState = appState,
                 modifier = Modifier.fillMaxSize(),
-                onShowFishDetailDialog = onShowFishDetailDialog
+                onShowFishDetailDialog = onShowFishDetailDialog,
+                showFishDialog = showFishDialog
             )
         }
     }

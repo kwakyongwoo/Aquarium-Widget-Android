@@ -1,5 +1,6 @@
 package com.dyddyd.aquariumwidget.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -70,6 +71,7 @@ class AquariumAppState(
         val topLevelNavOptions = navOptions {
             popUpTo(navController.graph.id) {
                 saveState = true
+                inclusive = true
             }
 
             launchSingleTop = true
@@ -85,10 +87,5 @@ class AquariumAppState(
             else -> { }
         }
     }
-
-    fun navigateToHome() = navController.navigateToHome()
-    fun navigateToCollections() = navController.navigateToCollections()
-    fun navigateToItems() = navController.navigateToItems()
-    fun navigateToHelp() = navController.navigateToHelp()
 
 }

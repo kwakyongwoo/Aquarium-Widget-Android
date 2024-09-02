@@ -1,6 +1,12 @@
 package com.dyddyd.aquariumwidget.feature.fish
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +23,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -38,10 +49,12 @@ import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxHeight
 import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxSize
 import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxWidth
 import com.dyddyd.aquariumwidget.core.designsystem.component.TextWithBackground
+import com.dyddyd.aquariumwidget.core.designsystem.component.dpToSp
 import com.dyddyd.aquariumwidget.core.designsystem.component.noRippleClickable
 import com.dyddyd.aquariumwidget.core.designsystem.theme.AquariumWidgetTheme
 import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.core.ui.getPainterByName
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
@@ -50,6 +63,10 @@ fun FishDialog(
     uiState: FishDialogUiState,
     addRemoveFish: (Boolean) -> Unit
 ) {
+    var animate by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        animate = true
+    }
 
     val fishInfo: Triple<Fish?, Boolean, String> = when (uiState) {
         is FishDialogUiState.Success -> Triple(
@@ -64,42 +81,60 @@ fun FishDialog(
     val rarity = (fishInfo.first?.rarity ?: "Common").lowercase(Locale.ROOT)
 
     Dialog(onDismissRequest = { onDismiss() }) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (uiState is FishDialogUiState.Success) {
-                Image(
-                    painter = getPainterByName(name = "fish_detail_title_$rarity"),
-                    contentDescription = "Fish Detail Title",
-                    modifier = Modifier.height(24.dp).padding(horizontal = 16.dp),
-                    contentScale = ContentScale.FillHeight
-                )
+        AnimatedVisibility(
+            visible = animate,
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(700)
+            )
+        ) {
+            var showTitle by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                delay(700)
+                showTitle = true
             }
 
-            Box(contentAlignment = Alignment.Center) {
-                ImageMaxWidth(painter = getPainterByName(name = "fish_detail_background_$rarity"))
-
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    FishDialogTop(
-                        fishName = fishInfo.first?.name ?: "",
-                        rarity = rarity
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (uiState is FishDialogUiState.Success && showTitle) {
+                    Image(
+                        painter = getPainterByName(name = "fish_detail_title_$rarity"),
+                        contentDescription = "Fish Detail Title",
+                        modifier = Modifier
+                            .height(24.dp)
+                            .padding(horizontal = 16.dp),
+                        contentScale = ContentScale.FillHeight
                     )
-
-                    FishDialogMiddle(
-                        fishId = fishInfo.first?.fishId ?: 1,
-                        rarity = rarity
-                    )
-
-                    FishDialogBottom(
-                        fishDescription = fishInfo.first?.description ?: "",
-                        habitatName = fishInfo.third,
-                        rarity = rarity
-                    )
+                } else {
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
-            }
 
-            addRemoveButton(isInAquarium = fishInfo.second, addRemoveFish = addRemoveFish)
+                Box(contentAlignment = Alignment.Center) {
+                    ImageMaxWidth(painter = getPainterByName(name = "fish_detail_background_$rarity"))
+
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        FishDialogTop(
+                            fishName = fishInfo.first?.name ?: "",
+                            rarity = rarity
+                        )
+
+                        FishDialogMiddle(
+                            fishId = fishInfo.first?.fishId ?: 1,
+                            rarity = rarity
+                        )
+
+                        FishDialogBottom(
+                            fishDescription = fishInfo.first?.description ?: "",
+                            habitatName = fishInfo.third,
+                            rarity = rarity
+                        )
+                    }
+                }
+
+                addRemoveButton(isInAquarium = fishInfo.second, addRemoveFish = addRemoveFish)
+            }
         }
     }
 }
@@ -219,10 +254,6 @@ private fun addRemoveButton(
         )
     }
 }
-
-@Composable
-private fun dpToSp(dp: Dp) = with(LocalDensity.current) { dp.toSp() }
-
 
 @Preview
 @Composable
