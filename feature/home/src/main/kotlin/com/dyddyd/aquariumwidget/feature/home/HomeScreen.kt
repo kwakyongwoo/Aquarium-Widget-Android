@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -55,6 +58,8 @@ internal fun HomeScreen(
     homeUiState: HomeUiState,
     onClickFishItem: (Int) -> Unit,
 ) {
+    var goFishingEnabled by remember { mutableStateOf(true) }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             ImageMaxWidth(
@@ -73,7 +78,12 @@ internal fun HomeScreen(
                     contentDescription = "Go Fishing Button",
                     modifier = Modifier
                         .padding(horizontal = 48.dp)
-                        .clickable { onGoFishingClick() }
+                        .clickable {
+                            if (goFishingEnabled) {
+                                goFishingEnabled = false
+                                onGoFishingClick()
+                            }
+                        }
                 )
 
                 Spacer(modifier = Modifier.fillMaxHeight(0.1f))
