@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
 
         val aquariumThemeId = user.selectedAquariumThemeId ?: 1
 
-        if (aquariumThemeId < user.maxHabitat) {
+        if (aquariumThemeId < user.maxHabitat && aquariumThemeId < 4) {
             userRepository.changeAquariumTheme(aquariumThemeId + 1)
         }
     }
