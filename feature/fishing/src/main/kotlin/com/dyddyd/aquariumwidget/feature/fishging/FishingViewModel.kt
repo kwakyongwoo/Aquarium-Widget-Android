@@ -39,8 +39,7 @@ import kotlin.random.Random
 @HiltViewModel
 class FishingViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val habitatRepository: HabitatRepository,
-    private val rodRepository: RodRepository,
+    habitatRepository: HabitatRepository,
     private val fishRepository: FishRepository,
     private val questRepository: QuestRepository,
     private val partsRepository: PartsRepository
@@ -52,31 +51,21 @@ class FishingViewModel @Inject constructor(
         habitatRepository.getHabitatInfo(user.curHabitat)
     }
 
-    private val rod = user.flatMapLatest { user ->
-        rodRepository.getMatchedRod(user.maxHabitat)
-    }
-
     private val allQuestsInHabitat = user.flatMapLatest { user ->
-        questRepository.getAllQuestsInHabitat(user.maxHabitat)
+        questRepository.getAllQuestsInHabitat(user.curHabitat)
     }
 
     private val allFishList = fishRepository.getAllFish()
 
     val fishingUiState: StateFlow<FishingUiState> = combine(
         habitat,
-        rod,
         user
-    ) { habitat, rod, user ->
-        if (rod == null) {
-            FishingUiState.Error
-        } else {
-            FishingUiState.Success(
-                habitat = habitat,
-                rod = rod,
-                chance = user.chance,
-                maxHabitat = user.maxHabitat
-            )
-        }
+    ) { habitat, user ->
+        FishingUiState.Success(
+            habitat = habitat,
+            chance = user.chance,
+            maxHabitat = user.maxHabitat
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -118,7 +107,6 @@ class FishingViewModel @Inject constructor(
 
     fun fishing() {
         viewModelScope.launch {
-            val rod = rod.first()
             val user = user.first()
 
             if (user.chance > 0) {
@@ -135,11 +123,11 @@ class FishingViewModel @Inject constructor(
                     fish = allFishList.first()
                         .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
                         .random()
-                    fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
+                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
                 }
 
 //                userRepository.decreaseGameChanceCount()
-                fishRepository.catchFish(fish.fishId, rod?.rodId ?: 1)
+                fishRepository.catchFish(fish.fishId, user.maxHabitat)
 
                 delay(TIME_INTERVAL)
 
@@ -161,6 +149,10 @@ class FishingViewModel @Inject constructor(
     fun checkQuest() {
         viewModelScope.launch {
             val user = user.first()
+
+            if (user.curHabitat != user.maxHabitat) {
+                return@launch
+            }
 
             val questUncleared = allQuestsInHabitat.first().toMutableList()
             questUncleared.removeAll(
@@ -205,9 +197,9 @@ class FishingViewModel @Inject constructor(
 
             questUncleared.removeAll(questCleared)
             if (questUncleared.isEmpty()) {
-                if (user.curHabitat < 4) {
-                    userRepository.setCurrentHabitat(user.maxHabitat + 1)
-                    userRepository.clearCurrentHabitat(user.maxHabitat)
+                userRepository.clearCurrentHabitat(user.maxHabitat)
+                if (user.maxHabitat < 4) {
+                    userRepository.setCurrentHabitat(user.curHabitat + 1)
                     isClearStage = true
                 }
             }
@@ -226,7 +218,6 @@ sealed interface FishingUiState {
     data object Error : FishingUiState
     data class Success(
         val habitat: Habitat,
-        val rod: Rod,
         val chance: Int,
         val maxHabitat: Int
     ) : FishingUiState

@@ -136,6 +136,7 @@ internal fun FishingScreen(
                         .fillMaxHeight(159 / 195f)
                         .align(Alignment.TopEnd),
                     expandToWidth = expandToWidth,
+                    rodId = fishingUiState.maxHabitat
                 )
             }
 
@@ -199,7 +200,7 @@ internal fun FishingScreen(
                 StageSelectDialog(
                     onDismiss = { isStageSelectOpen = false },
                     onStageSelectClick = onStageSelectClick,
-                    maxStage = fishingUiState.maxHabitat
+                    maxStage = if (fishingUiState.maxHabitat < 5) fishingUiState.maxHabitat else 4
                 )
             }
         }
@@ -324,11 +325,12 @@ private fun FishingCat(
 @Composable
 private fun FishingRod(
     modifier: Modifier = Modifier,
-    expandToWidth: Boolean
+    expandToWidth: Boolean,
+    rodId: Int
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.feature_fishing_rod),
+            painter = getPainterByName(name = "fishing_rod_$rodId"),
             contentDescription = "Fishing Rod",
             modifier = Modifier
                 .fillMaxHeight(45 / 159f)
