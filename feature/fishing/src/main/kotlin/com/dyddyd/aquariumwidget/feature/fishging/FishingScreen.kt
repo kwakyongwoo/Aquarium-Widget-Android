@@ -446,9 +446,12 @@ private fun StageSelectDialog(
                             }
                         )
                     }
-                    ImageMaxWidth(
-                        painter = painterResource(id = R.drawable.feature_fishing_stage_unknown),
-                    )
+
+                    repeat(4 - maxStage) {
+                        ImageMaxWidth(
+                            painter = painterResource(id = R.drawable.feature_fishing_stage_unknown),
+                        )
+                    }
                 }
             }
         }

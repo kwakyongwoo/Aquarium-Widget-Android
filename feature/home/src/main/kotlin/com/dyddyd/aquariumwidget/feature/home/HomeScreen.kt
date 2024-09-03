@@ -1,22 +1,29 @@
 package com.dyddyd.aquariumwidget.feature.home
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +33,7 @@ import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxWidth
 import com.dyddyd.aquariumwidget.core.designsystem.component.noRippleClickable
 import com.dyddyd.aquariumwidget.core.designsystem.theme.HomeBackgroundColor
 import com.dyddyd.aquariumwidget.core.model.data.Fish
+import com.dyddyd.aquariumwidget.core.ui.AnimateFishImage
 import com.dyddyd.aquariumwidget.core.ui.FishItem
 import com.dyddyd.aquariumwidget.core.ui.getPainterByName
 
@@ -43,7 +51,8 @@ internal fun HomeRoute(
         onGoFishingClick = onGoFishingClick,
         onFishItemClick = onFishItemClick,
         homeUiState = homeUiState,
-        onClickFishItem = viewModel::setFishId
+        aquariumPrev = viewModel::setAquariumThemePrev,
+        aquariumNext = viewModel::setAquariumThemeNext
     )
 }
 
@@ -53,8 +62,11 @@ internal fun HomeScreen(
     onGoFishingClick: () -> Unit,
     onFishItemClick: (Fish) -> Unit,
     homeUiState: HomeUiState,
-    onClickFishItem: (Int) -> Unit,
+    aquariumPrev: () -> Unit,
+    aquariumNext: () -> Unit
 ) {
+    var goFishingEnabled by remember { mutableStateOf(true) }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             ImageMaxWidth(
@@ -73,7 +85,12 @@ internal fun HomeScreen(
                     contentDescription = "Go Fishing Button",
                     modifier = Modifier
                         .padding(horizontal = 48.dp)
-                        .clickable { onGoFishingClick() }
+                        .clickable {
+                            if (goFishingEnabled) {
+                                goFishingEnabled = false
+                                onGoFishingClick()
+                            }
+                        }
                 )
 
                 Spacer(modifier = Modifier.fillMaxHeight(0.1f))
@@ -81,7 +98,8 @@ internal fun HomeScreen(
                 HomeBottom(
                     onFishItemClick = onFishItemClick,
                     homeUiState = homeUiState,
-                    onClickFishItem = onClickFishItem
+                    aquariumPrev = aquariumPrev,
+                    aquariumNext = aquariumNext
                 )
             }
         }
@@ -93,7 +111,8 @@ private fun HomeBottom(
     onFishItemClick: (Fish) -> Unit,
     modifier: Modifier = Modifier,
     homeUiState: HomeUiState,
-    onClickFishItem: (Int) -> Unit
+    aquariumPrev: () -> Unit,
+    aquariumNext: () -> Unit
 ) {
     Box(modifier = modifier) {
         ImageMaxWidth(
@@ -106,18 +125,48 @@ private fun HomeBottom(
             modifier = Modifier.align(Alignment.BottomCenter),
             verticalArrangement = Arrangement.Bottom
         ) {
-            val aquariumPainter = getPainterByName(
-                name = when (homeUiState) {
-                    HomeUiState.Loading -> "aquarium_1"
-                    is HomeUiState.Success -> "aquarium_${homeUiState.aquariumThemeId}"
-                }
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.feature_home_prev),
+                    contentDescription = "Previous Button",
+                    modifier = Modifier
+                        .width(32.dp)
+                        .padding(start = 8.dp)
+                        .clickable {
+                            aquariumPrev()
+                        },
+                    contentScale = ContentScale.FillWidth
+                )
 
-            ImageMaxWidth(
-                painter = aquariumPainter,
-                contentDescription = "Home Aquarium",
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
+                AnimateFishImage(
+                    aquariumId = when (homeUiState) {
+                        HomeUiState.Loading -> 1
+                        is HomeUiState.Success -> homeUiState.aquariumThemeId
+                    },
+                    fishList = when (homeUiState) {
+                        HomeUiState.Loading -> emptyList()
+                        is HomeUiState.Success -> homeUiState.fishList.map { it.fishId }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.feature_home_next),
+                    contentDescription = "Next Button",
+                    modifier = Modifier
+                        .width(32.dp)
+                        .padding(end = 8.dp)
+                        .clickable {
+                            aquariumNext()
+                        },
+                    contentScale = ContentScale.FillWidth
+                )
+            }
 
             Box(modifier = Modifier.aspectRatio(5f))
 
@@ -141,7 +190,6 @@ private fun HomeBottom(
                                 FishItem(
                                     fishId = fish.fishId,
                                     modifier = Modifier.noRippleClickable {
-                                        onClickFishItem(fish.fishId)
                                         onFishItemClick(fish)
                                     }
                                 )

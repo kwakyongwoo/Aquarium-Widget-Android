@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -21,8 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    userRepository: UserRepository,
+    private val userRepository: UserRepository,
     fishRepository: FishRepository
 ) : ViewModel() {
 
@@ -47,12 +47,25 @@ class HomeViewModel @Inject constructor(
         initialValue = HomeUiState.Loading
     )
 
-    fun setFishId(fishId: Int) {
-        Log.d("HomeViewModel", "setFishId: $fishId")
-        savedStateHandle[FISH_ID] = fishId
-        Log.d("HomeViewModel", "setFishId: ${savedStateHandle.get<Int>(FISH_ID)}")
+    fun setAquariumThemeNext() = viewModelScope.launch {
+        val user = user.first()
+
+        val aquariumThemeId = user.selectedAquariumThemeId ?: 1
+
+        if (aquariumThemeId < user.maxHabitat) {
+            userRepository.changeAquariumTheme(aquariumThemeId + 1)
+        }
     }
 
+    fun setAquariumThemePrev() = viewModelScope.launch {
+        val user = user.first()
+
+        val aquariumThemeId = user.selectedAquariumThemeId ?: 1
+
+        if (aquariumThemeId > 1) {
+            userRepository.changeAquariumTheme(aquariumThemeId - 1)
+        }
+    }
 }
 
 sealed interface HomeUiState {
