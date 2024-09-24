@@ -42,7 +42,8 @@ class FishingViewModel @Inject constructor(
     habitatRepository: HabitatRepository,
     private val fishRepository: FishRepository,
     private val questRepository: QuestRepository,
-    private val partsRepository: PartsRepository
+    private val partsRepository: PartsRepository,
+    private val rodRepository: RodRepository
 ) : ViewModel() {
 
     private val user = userRepository.getUserInfo()
@@ -117,16 +118,16 @@ class FishingViewModel @Inject constructor(
                     .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
                     .random()
 
-//                repeat(100) {
-//
-//                    rarity = selectRarity()
-//                    fish = allFishList.first()
-//                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
-//                        .random()
-//                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
-//                }
+                repeat(100) {
 
-//                userRepository.decreaseGameChanceCount()
+                    rarity = selectRarity()
+                    fish = allFishList.first()
+                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
+                        .random()
+                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
+                }
+
+                userRepository.decreaseGameChanceCount()
                 fishRepository.catchFish(fish.fishId, user.maxHabitat)
 
                 delay(TIME_INTERVAL)
@@ -174,6 +175,7 @@ class FishingViewModel @Inject constructor(
             questUncleared.removeAll(questCleared)
             if (questUncleared.isEmpty()) {
                 userRepository.clearCurrentHabitat(user.maxHabitat)
+                rodRepository.collectRod(user.curHabitat + 1)
                 if (user.maxHabitat < 4) {
                     userRepository.setCurrentHabitat(user.curHabitat + 1)
                     isClearStage = true

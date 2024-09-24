@@ -28,6 +28,7 @@ import com.dyddyd.aquariumwidget.core.designsystem.component.ImageMaxWidth
 import com.dyddyd.aquariumwidget.core.designsystem.component.noRippleClickable
 import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.core.ui.FishItem
+import com.dyddyd.aquariumwidget.core.ui.getPainterByName
 
 @Composable
 internal fun CollectionsRoute(
@@ -73,7 +74,7 @@ internal fun CollectionsScreen(
                 )
 
                 Image(
-                    painter = painterResource(id = R.drawable.feature_collections_close),
+                    painter = getPainterByName("close"),
                     contentDescription = "Collections Close",
                     modifier = Modifier
                         .size(28.dp)
