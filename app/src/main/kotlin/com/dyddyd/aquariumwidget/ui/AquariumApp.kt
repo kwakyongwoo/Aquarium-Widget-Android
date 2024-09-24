@@ -32,6 +32,7 @@ import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.feature.fish.FishDialog
 import com.dyddyd.aquariumwidget.feature.fish.FishDialogUiState
 import com.dyddyd.aquariumwidget.feature.fish.FishDialogViewModel
+import com.dyddyd.aquariumwidget.feature.quest.QuestDialog
 import com.dyddyd.aquariumwidget.navigation.AquariumNavHost
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.COLLECTIONS
@@ -48,6 +49,7 @@ fun AquariumApp(
     dialogViewModel: FishDialogViewModel = hiltViewModel()
 ) {
     var showFishDialog by remember { mutableStateOf(false) }
+    var showQuestDialog by remember { mutableStateOf(false) }
     val fishDialogUiState by dialogViewModel.fishDialogUiState.collectAsStateWithLifecycle()
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -60,7 +62,10 @@ fun AquariumApp(
                 showFishDialog = true
             },
             fishDialogUiState = fishDialogUiState,
-            addRemoveFish = dialogViewModel::addRemoveFishInAquarium
+            addRemoveFish = dialogViewModel::addRemoveFishInAquarium,
+            showQuestDialog = showQuestDialog,
+            onQuestDialogDismiss = { showQuestDialog = false },
+            onShowQuestDialog = { showQuestDialog = true },
         )
     }
 }
@@ -73,7 +78,10 @@ fun AquariumApp(
     onFishDialogDismiss: () -> Unit,
     onShowFishDetailDialog: (Fish) -> Unit,
     fishDialogUiState: FishDialogUiState,
-    addRemoveFish: (Boolean) -> Unit
+    addRemoveFish: (Boolean) -> Unit,
+    showQuestDialog: Boolean,
+    onQuestDialogDismiss: () -> Unit,
+    onShowQuestDialog: () -> Unit
 ) {
     val destination = appState.currentTopLevelDestination
 
@@ -85,6 +93,12 @@ fun AquariumApp(
             uiState = fishDialogUiState,
             onDismiss = { onFishDialogDismiss() },
             addRemoveFish = addRemoveFish
+        )
+    }
+
+    if (showQuestDialog) {
+        QuestDialog(
+            onDismiss = { onQuestDialogDismiss() }
         )
     }
 
@@ -120,6 +134,7 @@ fun AquariumApp(
                         onItemClick = { appState.navigateToTopLevelDestination(ITEMS) },
                         onHelpClick = { appState.navigateToTopLevelDestination(HELP) },
                         isHomeSelected = destination == HOME,
+                        onQuestClick = onShowQuestDialog
                     )
                 }
             }

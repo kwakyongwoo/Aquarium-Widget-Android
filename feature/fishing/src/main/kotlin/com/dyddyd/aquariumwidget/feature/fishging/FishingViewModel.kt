@@ -117,14 +117,14 @@ class FishingViewModel @Inject constructor(
                     .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
                     .random()
 
-                repeat(100) {
-
-                    rarity = selectRarity()
-                    fish = allFishList.first()
-                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
-                        .random()
-                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
-                }
+//                repeat(100) {
+//
+//                    rarity = selectRarity()
+//                    fish = allFishList.first()
+//                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
+//                        .random()
+//                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
+//                }
 
 //                userRepository.decreaseGameChanceCount()
                 fishRepository.catchFish(fish.fishId, user.maxHabitat)
@@ -162,38 +162,14 @@ class FishingViewModel @Inject constructor(
             val questCleared = mutableListOf<Quest>()
 
             questUncleared.forEach { q ->
-                val isCleared = when (q) {
-                    is QuestTypeTotal -> {
-                        fishRepository.getAllCollectFish().first()
-                            .count { it.habitatId == q.habitatId } >= q.targetCount
-                    }
-
-                    is QuestTypeSingle -> fishRepository.getCollectedFish(q.targetFishId)
-                        .first().size >= q.targetCount
-
-                    is QuestTypeTotalNoDup -> fishRepository.getAllCollectedFishWithoutDuplication()
-                        .first().count { it.habitatId == q.habitatId } >= q.targetCount
-
-                    is QuestTypeRarity -> fishRepository.getAllCollectedFishByRarity(q.rarity)
-                        .first().count { it.habitatId == q.habitatId } >= q.targetCount
-
-                    else -> {
-                        Log.d("FishingViewModel", "quest type not matched")
-                        false
-                    }
-                }
-
-                if (isCleared) {
+                if (q.actualCount >= q.targetCount) {
                     questCleared.add(q)
-                    Log.d("FishingViewModel", "quest clear: ${q.title}")
                     questRepository.clearQuest(q.habitatId, q.questId)
                     partsRepository.collectPart(q.partsId)
                 }
             }
 
             clearedQuestList = questCleared
-
-            Log.d("FishingViewModel", "questUncleared: $clearedQuestList")
 
             questUncleared.removeAll(questCleared)
             if (questUncleared.isEmpty()) {

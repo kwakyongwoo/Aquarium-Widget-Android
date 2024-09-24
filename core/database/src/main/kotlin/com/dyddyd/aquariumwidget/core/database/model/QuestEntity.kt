@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.dyddyd.aquariumwidget.core.model.data.Fish
 import com.dyddyd.aquariumwidget.core.model.data.Quest
 import com.dyddyd.aquariumwidget.core.model.data.QuestTypeRarity
 import com.dyddyd.aquariumwidget.core.model.data.QuestTypeSingle
@@ -39,7 +40,7 @@ data class QuestEntity(
     val partsId: Int,
 )
 
-fun QuestEntity.asExternalModel(): Quest {
+fun QuestEntity.asExternalModel(fishList: List<Fish>): Quest {
     return when (questId % 3) {
         1 -> {
             QuestTypeTotal(
@@ -109,5 +110,7 @@ fun QuestEntity.asExternalModel(): Quest {
                 targetCount = habitatId * 5
             )
         }
+    }.apply {
+        updateActualCount(fishList)
     }
 }

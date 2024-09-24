@@ -51,6 +51,7 @@ dependencies {
     implementation(projects.feature.items)
     implementation(projects.feature.help)
     implementation(projects.feature.fish)
+    implementation(projects.feature.quest)
 
     implementation(projects.core.common)
     implementation(projects.core.ui)

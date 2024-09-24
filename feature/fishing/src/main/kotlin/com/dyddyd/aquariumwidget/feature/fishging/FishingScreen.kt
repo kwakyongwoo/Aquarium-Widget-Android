@@ -118,7 +118,8 @@ internal fun FishingScreen(
                 chance = fishingUiState.chance,
                 modifier = Modifier.align(Alignment.TopCenter),
                 habitatName = fishingUiState.habitat.name,
-                onStageSelectClick = { isStageSelectOpen = true }
+                onStageSelectClick = { isStageSelectOpen = true },
+                fishingState = fishingState
             )
 
             FishingCat(
@@ -213,7 +214,8 @@ private fun FishingTopBar(
     onHomeClick: () -> Unit,
     chance: Int,
     habitatName: String,
-    onStageSelectClick: () -> Unit
+    onStageSelectClick: () -> Unit,
+    fishingState: FishingState
 ) {
     Column(
         modifier = modifier
@@ -288,7 +290,7 @@ private fun FishingTopBar(
                     contentDescription = "Change Stage",
                     modifier = Modifier
                         .size(40.dp)
-                        .noRippleClickable { onStageSelectClick() },
+                        .noRippleClickable { if (fishingState is FishingState.NotFishing) onStageSelectClick() },
                 )
             }
 
@@ -297,7 +299,7 @@ private fun FishingTopBar(
                 contentDescription = "Back Home",
                 modifier = Modifier
                     .size(40.dp)
-                    .noRippleClickable { onHomeClick() },
+                    .noRippleClickable { if (fishingState is FishingState.NotFishing) onHomeClick() },
                 contentScale = ContentScale.FillBounds
             )
         }

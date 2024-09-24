@@ -46,6 +46,7 @@ fun AquariumTopAppBar(
     onItemClick: () -> Unit,
     onHelpClick: () -> Unit,
     isHomeSelected: Boolean,
+    onQuestClick: () -> Unit
 ) {
     var isSideBarOpen by remember { mutableStateOf(false) }
 
@@ -118,6 +119,9 @@ fun AquariumTopAppBar(
                     ImageMaxHeight(
                         painter = painterResource(id = R.drawable.core_designsystem_topappbar_quest),
                         contentDescription = "Top App Bar Menu",
+                        modifier = Modifier.noRippleClickable {
+                            onQuestClick()
+                        },
                     )
 
                     ImageMaxHeight(
@@ -260,7 +264,8 @@ fun AquariumTopAppBarPreview() {
             onCollectionClick = {},
             onItemClick = {},
             onHelpClick = {},
-            isHomeSelected = true
+            isHomeSelected = true,
+            onQuestClick = {}
         )
 
         Column {
