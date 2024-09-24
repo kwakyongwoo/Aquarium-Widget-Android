@@ -108,6 +108,8 @@ class FishingViewModel @Inject constructor(
 
     fun fishing() {
         viewModelScope.launch {
+            userRepository.decreaseGameChanceCount()
+
             val user = user.first()
 
             if (user.chance > 0) {
@@ -127,7 +129,6 @@ class FishingViewModel @Inject constructor(
                     fishRepository.catchFish(fish.fishId, user.maxHabitat)
                 }
 
-                userRepository.decreaseGameChanceCount()
                 fishRepository.catchFish(fish.fishId, user.maxHabitat)
 
                 delay(TIME_INTERVAL)
