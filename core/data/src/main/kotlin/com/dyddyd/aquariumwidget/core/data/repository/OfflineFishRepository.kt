@@ -1,14 +1,18 @@
 package com.dyddyd.aquariumwidget.core.data.repository
 
+import android.content.Context
 import com.dyddyd.aquariumwidget.core.database.dao.FishDao
 import com.dyddyd.aquariumwidget.core.database.model.FishEntity
 import com.dyddyd.aquariumwidget.core.database.model.asExternalModel
 import com.dyddyd.aquariumwidget.core.model.data.Fish
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class OfflineFishRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val fishDao: FishDao,
 ): FishRepository {
     override suspend fun catchFish(fishId: Int, rodId: Int) {
@@ -33,7 +37,13 @@ internal class OfflineFishRepository @Inject constructor(
 
     override fun getAllFishInAquarium(aquariumId: Int): Flow<List<Fish>> =
         fishDao.getAllFishInAquarium(aquariumId = aquariumId)
-            .map { it.map(FishEntity::asExternalModel) }
+            .map {
+                val pref = context.getSharedPreferences("aquarium", Context.MODE_PRIVATE)
+                pref.edit().putString("aquarium_id", aquariumId.toString()).apply()
+                pref.edit().putString("fish_list", it.joinToString(",") { f -> f.fishId.toString() }).apply()
+
+                it.map(FishEntity::asExternalModel)
+            }
 
     override fun getCollectedFish(fishId: Int): Flow<List<Fish>> =
         fishDao.getCollectedFish(fishId = fishId)
