@@ -120,14 +120,15 @@ class FishingViewModel @Inject constructor(
                     .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
                     .random()
 
-                repeat(100) {
-
-                    rarity = selectRarity()
-                    fish = allFishList.first()
-                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
-                        .random()
-                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
-                }
+                // debug
+//                repeat(100) {
+//
+//                    rarity = selectRarity()
+//                    fish = allFishList.first()
+//                        .filter { it.rarity == rarity && it.habitatId == user.curHabitat }
+//                        .random()
+//                    fishRepository.catchFish(fish.fishId, user.maxHabitat)
+//                }
 
                 fishRepository.catchFish(fish.fishId, user.maxHabitat)
 

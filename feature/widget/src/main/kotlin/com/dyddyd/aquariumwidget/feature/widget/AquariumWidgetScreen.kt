@@ -75,7 +75,7 @@ fun AquariumWidgetScreen(updateCount: Long, type: Int) {
 private fun FishImage(
     size: DpSize,
     fishImage: Bitmap,
-    scale: Float = 0.1f
+    scale: Float = 0.15f
 ) {
     val boxSize = generateRandomPosition(size, fishImage.width.dp * scale, fishImage.height.dp * scale)
 
