@@ -1,6 +1,7 @@
 package com.dyddyd.aquariumwidget.feature.widget
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -13,10 +14,11 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.ContentScale
-import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.text.Text
 import com.dyddyd.aquariumwidget.core.ui.getResIdByName
@@ -26,6 +28,10 @@ import kotlin.random.Random
 fun AquariumWidgetScreen(updateCount: Long, type: Int) {
     val size = LocalSize.current
     val context = LocalContext.current
+
+    val intent = Intent().apply {
+        setClassName(context.packageName, "com.dyddyd.aquariumwidget.MainActivity")
+    }
 
     val prefs = context.getSharedPreferences("aquarium", Context.MODE_PRIVATE)
     val aquariumId = prefs.getString("aquarium_id", "")?.toInt() ?: 1
@@ -37,7 +43,9 @@ fun AquariumWidgetScreen(updateCount: Long, type: Int) {
         }
     } ?: emptyList()
 
-    Box {
+    Box(
+        modifier = GlanceModifier.clickable(actionStartActivity(intent))
+    ) {
         Text(text = "$updateCount")
 
         Image(
