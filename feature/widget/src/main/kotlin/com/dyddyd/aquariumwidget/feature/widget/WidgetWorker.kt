@@ -1,6 +1,7 @@
 package com.dyddyd.aquariumwidget.feature.widget
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -17,6 +18,7 @@ class WidgetWorker(
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
+        Log.d("WidgetWorker", "WidgetWorker: doWork")
         var isStop = true
 
         GlanceAppWidgetManager(context).getGlanceIds(AquariumSmallWidget::class.java).forEach { id ->
@@ -35,6 +37,7 @@ class WidgetWorker(
             AquariumLargeWidget().update(context, id)
         }
 
+        Log.d("WidgetWorker", "WidgetWorker isStop: $isStop")
         scheduleWidgetUpdate(context)
 
         if (isStop) {
@@ -47,8 +50,10 @@ class WidgetWorker(
 }
 
 fun scheduleWidgetUpdate(context: Context) {
+    val TIME_INTERVAL = 10L
+
     val request = OneTimeWorkRequestBuilder<WidgetWorker>()
-        .setInitialDelay(5, TimeUnit.SECONDS)
+        .setInitialDelay(TIME_INTERVAL, TimeUnit.SECONDS)
         .build()
 
     WorkManager.getInstance(context).enqueueUniqueWork(

@@ -20,6 +20,7 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
 import androidx.glance.currentState
+import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.absolutePadding
 import androidx.glance.layout.size
@@ -38,69 +39,7 @@ class AquariumLargeWidget : GlanceAppWidget() {
             val prefs = currentState<Preferences>()
             val updateCount = prefs[longPreferencesKey("update_count")] ?: 0
 
-            AquariumScreen(updateCount)
-        }
-    }
-
-    private fun generateRandomPosition(size: DpSize, width: Dp, height: Dp): Pair<Int, Int> {
-        return Pair(
-            Random.nextInt((size.width - width).value.toInt()),
-            Random.nextInt((size.height - height).value.toInt())
-        )
-    }
-
-    @Composable
-    private fun AquariumScreen(updateCount: Long) {
-        val size = LocalSize.current
-        val context = LocalContext.current
-
-        val prefs = context.getSharedPreferences("aquarium", Context.MODE_PRIVATE)
-        val aquariumId= prefs.getString("aquarium_id", "")?.toInt() ?: 1
-        val fishList = prefs.getString("fish_list", "")?.let {
-            if (it != "") {
-                it.split(",").map { it.toInt() }
-            }
-            else {
-                emptyList()
-            }
-        } ?: emptyList()
-
-        Box {
-            Text(text = "$updateCount")
-
-            Image(
-                provider = ImageProvider(resId = getResIdByName(context, "widget_aquarium_large_$aquariumId")),
-                contentDescription = "Aquarium",
-            )
-
-            fishList.forEach { i ->
-                val resId = getResIdByName(context, "fish_$i")
-                val bitmap = BitmapFactory.decodeResource(context.resources, resId)
-                val matrix = Matrix()
-                matrix.preScale(if (Random.nextBoolean()) -1f else 1f, 1f)
-                val fishImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true)
-
-                FishImage(size, fishImage)
-            }
-        }
-    }
-
-    @Composable
-    private fun FishImage(
-        size: DpSize,
-        fishImage: Bitmap,
-        scale: Float = 0.1f
-    ) {
-        val position = generateRandomPosition(size, fishImage.width.dp * scale, fishImage.height.dp * scale)
-
-        Box(
-            modifier = GlanceModifier.absolutePadding(left = position.first.dp, top = position.second.dp)
-        ) {
-            Image(
-                provider = ImageProvider(bitmap = fishImage),
-                contentDescription = "Fish",
-                modifier = GlanceModifier.size(width = fishImage.width.dp * scale, height = fishImage.height.dp * scale)
-            )
+            AquariumWidgetScreen(updateCount, AQUARIUM_WIDGET_TYPE_LARGE)
         }
     }
 }
