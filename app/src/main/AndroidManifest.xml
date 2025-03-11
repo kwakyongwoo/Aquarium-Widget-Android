@@ -28,7 +28,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/aquarium_small_widget_info" />
+                android:resource="@xml/feature_widget_aquarium_small_widget_info" />
         </receiver>
 
         <receiver android:name=".feature.widget.AquariumLargeWidgetReceiver"
@@ -38,7 +38,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/aquarium_large_widget_info" />
+                android:resource="@xml/feature_widget_aquarium_large_widget_info" />
         </receiver>
 
     </application>
