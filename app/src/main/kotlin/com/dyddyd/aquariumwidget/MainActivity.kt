@@ -27,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.dyddyd.aquariumwidget.MainActivityUiState.Loading
+import com.dyddyd.aquariumwidget.core.data.repository.UserRepository
 import com.dyddyd.aquariumwidget.core.designsystem.theme.AquariumWidgetTheme
 import com.dyddyd.aquariumwidget.ui.AquariumApp
 import com.dyddyd.aquariumwidget.ui.rememberAquariumAppState
@@ -34,11 +35,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +85,8 @@ class MainActivity : ComponentActivity() {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     windowInsetsController?.let {
-                        it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        it.systemBarsBehavior =
+                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                         it.hide(WindowInsets.Type.navigationBars())
                     }
 
@@ -100,7 +106,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            val appState = rememberAquariumAppState()
+            val appState = rememberAquariumAppState(
+                userRepository = userRepository,
+            )
 
             AquariumWidgetTheme {
                 AquariumApp(appState)

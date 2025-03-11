@@ -41,6 +41,8 @@ import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.HOME
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.ITEMS
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.SPLASH
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun AquariumApp(
@@ -51,6 +53,14 @@ fun AquariumApp(
     var showFishDialog by remember { mutableStateOf(false) }
     var showQuestDialog by remember { mutableStateOf(false) }
     val fishDialogUiState by dialogViewModel.fishDialogUiState.collectAsStateWithLifecycle()
+    val lastPlayedDate by appState.lastPlayedDate.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            appState.updateLastPlayedDate()
+            delay(60_000)
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         AquariumApp(

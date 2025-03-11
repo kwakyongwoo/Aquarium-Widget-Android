@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.dyddyd.aquariumwidget.core.data.repository.UserRepository
 import com.dyddyd.aquariumwidget.feature.collections.navigation.COLLECTIONS_ROUTE
 import com.dyddyd.aquariumwidget.feature.collections.navigation.navigateToCollections
 import com.dyddyd.aquariumwidget.feature.fishging.navigation.FISHING_ROUTE
@@ -30,19 +31,29 @@ import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.FISHING
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.COLLECTIONS
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.ITEMS
 import com.dyddyd.aquariumwidget.navigation.TopLevelDestination.HELP
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun rememberAquariumAppState(
+    userRepository: UserRepository,
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): AquariumAppState {
     return remember(
         navController,
         coroutineScope,
+        userRepository,
     ) {
         AquariumAppState(
             navController = navController,
             coroutineScope = coroutineScope,
+            userRepository = userRepository,
         )
     }
 }
@@ -50,7 +61,8 @@ fun rememberAquariumAppState(
 @Stable
 class AquariumAppState(
     val navController: NavHostController,
-    coroutineScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
+    private val userRepository: UserRepository,
 ) {
     val currentDestination: NavDestination?
         @Composable get() = navController
@@ -66,6 +78,31 @@ class AquariumAppState(
             HELP_ROUTE -> HELP
             else -> null
         }
+
+    val lastPlayedDate: StateFlow<Int?> = userRepository.getUserInfo().map {
+        it.lastPlayedDate
+    }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = null
+        )
+
+    fun updateLastPlayedDate() {
+        coroutineScope.launch {
+            val date = SimpleDateFormat("yyyyMMdd").format(Date()).toInt()
+            Log.d("AquariumAppState", "updateLastPlayedDate: $date")
+
+            lastPlayedDate.value?.let {
+                Log.d("AquariumAppState", "updateLastPlayedDate(): $it")
+                if (it < date) {
+                    userRepository.resetGameChanceCount()
+                }
+            }
+
+            userRepository.updateLastPlayedDate(date)
+        }
+    }
 
     fun navigateToTopLevelDestination(destination: TopLevelDestination) {
         val topLevelNavOptions = navOptions {

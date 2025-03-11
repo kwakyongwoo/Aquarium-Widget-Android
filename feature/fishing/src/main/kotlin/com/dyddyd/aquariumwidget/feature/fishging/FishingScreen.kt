@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -82,7 +83,8 @@ internal fun FishingRoute(
         onFishingClick = viewModel::fishing,
         clearedQuests = viewModel.clearedQuestList,
         isClearStage = viewModel.isClearStage,
-        onStageSelectClick = viewModel::changeStage
+        onStageSelectClick = viewModel::changeStage,
+        resetHearts = viewModel::resetChance,
     )
 }
 
@@ -95,7 +97,8 @@ internal fun FishingScreen(
     onFishingClick: () -> Unit,
     clearedQuests: List<Quest>?,
     isClearStage: Boolean,
-    onStageSelectClick: (Int) -> Unit
+    onStageSelectClick: (Int) -> Unit,
+    resetHearts: () -> Unit,
 ) {
     var isStageSelectOpen by remember { mutableStateOf(false) }
 
@@ -109,6 +112,8 @@ internal fun FishingScreen(
         onHomeClick()
     }
 
+    var debugCat by remember { mutableIntStateOf(0) }
+
     Box(modifier = modifier.fillMaxSize()) {
         if (fishingUiState is FishingUiState.Success) {
             ImageMaxSize(painter = getPainterByName(name = "fishing_background_${fishingUiState.habitat.name.lowercase()}"))
@@ -119,7 +124,9 @@ internal fun FishingScreen(
                 modifier = Modifier.align(Alignment.TopCenter),
                 habitatName = fishingUiState.habitat.name,
                 onStageSelectClick = { isStageSelectOpen = true },
-                fishingState = fishingState
+                fishingState = fishingState,
+                debugCat = debugCat,
+                resetHearts = resetHearts,
             )
 
             FishingCat(
@@ -127,7 +134,8 @@ internal fun FishingScreen(
                     .fillMaxWidth(82 / 90f)
                     .fillMaxHeight(143 / 195f)
                     .align(Alignment.TopEnd),
-                expandToWidth = expandToWidth
+                expandToWidth = expandToWidth,
+                increaseDebugCat = { debugCat += 1 },
             )
 
             if (fishingState !is FishingState.NotFishing) {
@@ -215,8 +223,12 @@ private fun FishingTopBar(
     chance: Int,
     habitatName: String,
     onStageSelectClick: () -> Unit,
-    fishingState: FishingState
+    fishingState: FishingState,
+    debugCat: Int = 0,
+    resetHearts: () -> Unit = {},
 ) {
+    var debugStage by remember { mutableStateOf(0) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -271,7 +283,10 @@ private fun FishingTopBar(
                         .height(40.dp)
                         .fillMaxWidth(0.4f)
                 ) {
-                    ImageMaxSize(painter = painterResource(id = R.drawable.feature_fishing_stage))
+                    ImageMaxSize(
+                        painter = painterResource(id = R.drawable.feature_fishing_stage),
+                        modifier = Modifier.noRippleClickable { debugStage += 1 },
+                    )
 
                     Text(
                         text = "Stage: $habitatName",
@@ -290,7 +305,10 @@ private fun FishingTopBar(
                     contentDescription = "Change Stage",
                     modifier = Modifier
                         .size(40.dp)
-                        .noRippleClickable { if (fishingState is FishingState.NotFishing) onStageSelectClick() },
+                        .noRippleClickable {
+                            if (debugCat == 6 && debugStage == 10) resetHearts()
+                            if (fishingState is FishingState.NotFishing) onStageSelectClick()
+                        },
                 )
             }
 
@@ -309,7 +327,8 @@ private fun FishingTopBar(
 @Composable
 private fun FishingCat(
     modifier: Modifier = Modifier,
-    expandToWidth: Boolean
+    expandToWidth: Boolean,
+    increaseDebugCat: () -> Unit,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Image(
@@ -318,7 +337,8 @@ private fun FishingCat(
             modifier = Modifier
                 .fillMaxHeight(21 / 143f)
                 .fillMaxWidth(16 / 82f)
-                .align(Alignment.BottomStart),
+                .align(Alignment.BottomStart)
+                .noRippleClickable(increaseDebugCat),
             contentScale = if (expandToWidth) ContentScale.FillHeight else ContentScale.FillWidth
         )
     }
@@ -354,8 +374,8 @@ private fun FishingButton(
         Image(
             painter = painterResource(
                 id =
-                if (enabled) R.drawable.feature_fishing_button_enable
-                else R.drawable.feature_fishing_button_disable
+                    if (enabled) R.drawable.feature_fishing_button_enable
+                    else R.drawable.feature_fishing_button_disable
             ),
             contentDescription = "Fishing Button",
             modifier = Modifier

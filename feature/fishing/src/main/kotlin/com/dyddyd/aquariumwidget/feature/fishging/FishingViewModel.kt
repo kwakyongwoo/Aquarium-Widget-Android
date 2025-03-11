@@ -108,11 +108,11 @@ class FishingViewModel @Inject constructor(
 
     fun fishing() {
         viewModelScope.launch {
-            userRepository.decreaseGameChanceCount()
-
             val user = user.first()
 
             if (user.chance > 0) {
+                userRepository.decreaseGameChanceCount()
+
                 fishingState = FishingState.Waiting(R.drawable.feature_fishing_state1)
 
                 var rarity = selectRarity()
@@ -189,6 +189,12 @@ class FishingViewModel @Inject constructor(
     fun changeStage(stageId: Int) {
         viewModelScope.launch {
             userRepository.setCurrentHabitat(stageId)
+        }
+    }
+
+    fun resetChance() {
+        viewModelScope.launch {
+            userRepository.resetGameChanceCount()
         }
     }
 }
